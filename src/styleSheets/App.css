@@ -1,0 +1,46 @@
+#root {
+  /* max-width: 1280px;
+  margin: 0 auto;
+  padding: 2em; */
+}
+
+.btn-usuario{
+  width: 50vw;
+}
+
+.menu-box{
+  border: 2px solid #b80e0c;
+  border-radius: 20px;
+  padding: 0 10px;
+}
+
+.form-catastro .field-checkbox label{
+  vertical-align: super;
+}
+
+.panel{
+  background-color: var(--bluegray-700);
+  border-radius: 10px;
+}
+
+.panel-form{
+  margin-right: 5vw;
+}
+
+.campo-template{
+  font-size: 0.75em;
+}
+
+.msj-error{
+  color:yellow
+}
+
+@media (min-width: 768px) { 
+
+}
+
+@media (min-width: 1200px) { 
+  .panel-form{
+    margin-right: 40vw;
+  }
+}
