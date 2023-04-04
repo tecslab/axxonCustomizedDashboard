@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react'
 import Menu from '../components/menu';
 import { Link, Outlet } from "react-router-dom";
 import { RestAPI } from "../utilities/restAPI"
+import Loader from '../components/loader';
 
 function DashBoard() {
   const restAPI = new RestAPI();
+  const [registrosVentas, setRegistrosVentas] = useState(null)
 
   useEffect(()=>{
     restAPI.getRegistrosVentas()
     .then(data => {
-      //console.log(data)
+      setRegistrosVentas(data)
     })
   },[])
 
@@ -20,7 +22,11 @@ function DashBoard() {
         <Menu />
       </div>
       <div className="col-10">
-        <Outlet />
+        {registrosVentas?
+          <Outlet context={[registrosVentas, setRegistrosVentas]}/>
+          :
+          <Loader />
+        }
       </div>
     </div>
   </div>

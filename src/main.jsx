@@ -8,7 +8,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
 import Dashboard from './pages/Dashboard';
-import Leads from "./pages/leads";
+import CanalesMedios from "./pages/canalesMedios";
 
 import {
   createBrowserRouter,
@@ -29,8 +29,8 @@ const router = createBrowserRouter([
     element: <Dashboard/>,
     children: [
       {
-        path: "leads",
-        element: <Leads/>,
+        path: "canales",
+        element: <CanalesMedios/>,
       },
     ]
   }

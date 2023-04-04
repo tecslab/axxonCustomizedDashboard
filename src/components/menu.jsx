@@ -11,10 +11,10 @@ function Menu() {
       icon:'pi pi-fw pi-map-marker',
       items:[
         {
-          label:'Leads',
+          label:'Ventas Por Canal',
           icon:'pi pi-fw pi-stop',
           command: () => {
-            navigate("/dashboard/leads");
+            navigate("/dashboard/canales");
           }
         },
       ]
