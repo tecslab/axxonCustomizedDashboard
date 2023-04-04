@@ -15,12 +15,8 @@ function getRandomHexColor() {
 export default function CanalesMedios(props) {
   const [registrosVentas, setRegistrosVentas] = useOutletContext();
   const documentStyle = getComputedStyle(document.documentElement);
-  const textColor = documentStyle.getPropertyValue('--text-color');
-  const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
-  const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
-
   const listaCanales = [...new Set(registrosVentas.map(item => item.CON_NOM_CANAL))];
-  const listaMedios = [...new Set(registrosVentas.map(item => item.CON_NOM_MEDIO))]
+  const listaMedios = [...new Set(registrosVentas.map(item => item.CON_NOM_MEDIO))].sort()
 
   let arrayCanalesMedios = []
   // {canal, medios: {}}
@@ -100,114 +96,6 @@ export default function CanalesMedios(props) {
       }
   };
 
-  
-  ////////////////////////////
-  const data = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-    datasets: [
-      {
-        label: 'First Dataset',
-        data: [65, 59, 80, 81, 56, 55, 40],
-        fill: false,
-        tension: 0, // de 0 a 1
-        borderColor: documentStyle.getPropertyValue('--blue-500')
-      },
-      {
-        label: 'Second Dataset',
-        data: [28, 48, 40, 19, 86, 27, 90],
-        fill: false,
-        borderDash: [10, 10],
-        tension: 0.4,
-        borderColor: documentStyle.getPropertyValue('--teal-500')
-      },
-      {
-        label: 'Third Dataset',
-        data: [12, 51, 62, 33, 21, 62, 45],
-        fill: true,
-        borderColor: documentStyle.getPropertyValue('--orange-500'),
-        tension: 0.4,
-        backgroundColor: 'rgba(255,167,38,0.2)'
-      }
-    ]
-  };
-
-  const options = {
-    maintainAspectRatio: false,
-    aspectRatio: 0.7,
-    plugins: {
-      legend: {
-        labels: {
-          color: "black"
-        }
-      }
-    },
-    scales: {
-      x: {
-        ticks: {
-          color: "black"
-        },
-        grid: {
-          color: "black"
-        }
-      },
-      y: {
-        ticks: {
-          color: "black"
-        },
-        grid: {
-          color: "black"
-        }
-      }
-    }
-  };
-
-  const options2 = {
-    indexAxis: 'y',
-    maintainAspectRatio: false,
-    aspectRatio: 0.8,
-    plugins: {
-        legend: {
-            labels: {
-                fontColor: textColor
-            }
-        }
-    },
-    scales: {
-        x: {
-            ticks: {
-                color: textColorSecondary,
-                font: {
-                    weight: 500
-                }
-            },
-            grid: {
-                display: false,
-                drawBorder: false
-            }
-        },
-        y: {
-            ticks: {
-                color: textColorSecondary
-            },
-            grid: {
-                color: surfaceBorder,
-                drawBorder: false
-            }
-        }
-    }
-  };
-  ////////////////////////////
-
-
-
-
-
-
-
-  
-
-
-
 
   return (
     <>
@@ -222,9 +110,9 @@ export default function CanalesMedios(props) {
           {/* <div className="card">
             <Chart type="bar" data={dataVentasXCanal} options={options2} />
           </div> */}
-          <div className="card">
+          {/* <div className="card">
             <Chart type="line" data={data} options={options} />
-          </div>
+          </div> */}
           {/* <div className="card">
             <Chart type="line" data={chartData} options={chartOptions} />
           </div> */}

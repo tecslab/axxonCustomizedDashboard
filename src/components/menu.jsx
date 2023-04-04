@@ -17,6 +17,13 @@ function Menu() {
             navigate("/dashboard/canales");
           }
         },
+        {
+          label:'Modelos',
+          icon:'pi pi-fw pi-stop',
+          command: () => {
+            navigate("/dashboard/modelos");
+          }
+        },
       ]
     }
   ];

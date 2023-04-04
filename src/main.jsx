@@ -9,6 +9,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import Dashboard from './pages/Dashboard';
 import CanalesMedios from "./pages/canalesMedios";
+import Modelos from "./pages/modelos";
 
 import {
   createBrowserRouter,
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
       {
         path: "canales",
         element: <CanalesMedios/>,
+      },
+      {
+        path: "modelos",
+        element: <Modelos/>,
       },
     ]
   }
