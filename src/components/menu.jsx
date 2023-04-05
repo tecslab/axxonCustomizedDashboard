@@ -12,16 +12,23 @@ function Menu() {
       items:[
         {
           label:'Ventas Por Canal',
-          icon:'pi pi-fw pi-stop',
+          icon:'pi pi-fw pi-filter',
           command: () => {
             navigate("/dashboard/canales");
           }
         },
         {
           label:'Modelos',
-          icon:'pi pi-fw pi-stop',
+          icon:'pi pi-fw pi-palette',
           command: () => {
             navigate("/dashboard/modelos");
+          }
+        },
+        {
+          label:'Modelos',
+          icon:'pi pi-fw pi-palette',
+          command: () => {
+            navigate("/dashboard/ciudades");
           }
         },
       ]
