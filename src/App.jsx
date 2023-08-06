@@ -5,7 +5,7 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(()=>{
-    navigate("/dashboard/leads");
+    navigate("/dashboard/visitantes");
   },[])
 
   return (

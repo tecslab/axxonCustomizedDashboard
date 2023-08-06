@@ -25,10 +25,17 @@ function Menu() {
           }
         },
         {
-          label:'Modelos',
-          icon:'pi pi-fw pi-palette',
+          label:'Ciudades',
+          icon:'pi pi-fw pi-sitemap',
           command: () => {
             navigate("/dashboard/ciudades");
+          }
+        },
+        {
+          label:'Segmentos',
+          icon:'pi pi-fw pi-send',
+          command: () => {
+            navigate("/dashboard/segmentos");
           }
         },
       ]

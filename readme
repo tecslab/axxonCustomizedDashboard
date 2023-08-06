@@ -1,12 +1,2 @@
 Desarrollado por: Pablo Esteban Villota, villota.dev@gmail.com
 Este proyecto usa Prime react para la estilización de componentes y bootstrap 5 para el sistema de grid
-
-
-El proyecto simula un servidor mediante json server, para esto es necesario instalar de forma global la librería json-server:
-npm install -g json-server
-
-y despues inicializarlo con el comando:
-json-server --watch db.json
-
-El servidor correra en el puerto 3000, revisar la documentación de json-server para más información.
-
