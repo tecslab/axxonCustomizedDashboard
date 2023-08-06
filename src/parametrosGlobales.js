@@ -2,7 +2,9 @@ let parametrosGlobales = {
   //urlBack: "http://localhost:3000",
   axxonOneServer: "127.0.0.1",
   axxonOnePort: "82",
-  prefix:"/"
+  prefix:"/",
+  user: "root",
+  password: "root"
 }
 
 

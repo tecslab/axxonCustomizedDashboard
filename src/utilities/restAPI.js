@@ -1,65 +1,18 @@
 import parametrosGlobales from "../parametrosGlobales"
-let urlBack =  parametrosGlobales.urlBack;
+let {axxonOneServer, axxonOnePort, prefix, user, password} =  parametrosGlobales
 
 export class RestAPI {
 
-  postRegistrosVentas(registro) {
-    
-    return fetch(urlBack + '/registrosVentas',{
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(registro)
-    }).then(res => res.json())
-    .catch(e => {
-      console.log('Error fetch en la ruta post: /registrosVentas');
-      console.log(e)
-    })
-  }
-
-  patchRegistrosVentas(registro, id){
-    return fetch(urlBack + '/registrosVentas/' + id,{
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(registro)
-    }).then(res => res.json())
-    .catch(e => {
-      console.log('Error fetch en la ruta patch: /registrosVentas');
-      console.log(e)
-    })
-  }
-
-  deleteRegistrosVentas(id){
-    return fetch(urlBack + '/registrosVentas/' + id,{
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then(res => res.json())
-    .catch(e => {
-      console.log('Error fetch en la ruta delete: /registrosVentas');
-      console.log(e)
-    })
-  }
-
-  getRegistrosVentas() {
-    return fetch(urlBack + '/registrosVentas')
+  getVisitors(initDate, finishDate){
+    let baseURI = user + ":" + password + "@" + axxonOneServer + ":" + axxonOnePort + prefix
+    let uri = baseURI + 'archive/events/detectors/'+ initDate + "/" + finishDate
+    console.log(uri)
+    return fetch(uri)
       .then(res => res.json())
       .catch(e => {
-        console.log('Error fetch en la ruta: /registrosVentas');
+        console.log('Error fetch en la ruta: /archive/events/detectors');
         console.log(e)
       })
   }
-
-  getRegistroVentas(id){ 
-    return fetch(urlBack + '/registrosVentas/'+ id)
-      .then(res => res.json())
-      .catch(e => {
-        console.log('Error fetch en la ruta: /registrosVentas');
-        console.log(e)
-      })
-  }
+  //http://127.0.0.1:82/archive/events/detectors/20230101T000000/20230801T000001
 }
