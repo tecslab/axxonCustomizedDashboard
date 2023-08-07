@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { PanelMenu } from 'primereact/panelmenu';
 import { useNavigate } from "react-router-dom";
 
@@ -11,33 +11,12 @@ function Menu() {
       icon:'pi pi-fw pi-map-marker',
       items:[
         {
-          label:'Ventas Por Canal',
+          label:'Visitantes',
           icon:'pi pi-fw pi-filter',
           command: () => {
-            navigate("/dashboard/canales");
+            navigate("/dashboard/visitantes");
           }
-        },
-        {
-          label:'Modelos',
-          icon:'pi pi-fw pi-palette',
-          command: () => {
-            navigate("/dashboard/modelos");
-          }
-        },
-        {
-          label:'Ciudades',
-          icon:'pi pi-fw pi-sitemap',
-          command: () => {
-            navigate("/dashboard/ciudades");
-          }
-        },
-        {
-          label:'Segmentos',
-          icon:'pi pi-fw pi-send',
-          command: () => {
-            navigate("/dashboard/segmentos");
-          }
-        },
+        }
       ]
     }
   ];
