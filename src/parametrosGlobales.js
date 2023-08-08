@@ -116,13 +116,15 @@ export const genDataBar = (registros, nombreColLabels) => {
 export const genDataLine = (registros, nombreColLabels) => {
   const labelsValueObj = {}
   // {label1: valueLabel1, label2: valueLabel2 ....}
+  // Cuenta cuantos eventos han acontecido(eje y) por cada una de las etiquetas(eje x)
   for (let i = 0; i < registros.length; i++) {
     let label = registros[i][nombreColLabels];
     labelsValueObj[label] = labelsValueObj[label] ? labelsValueObj[label] + 1 : 1;
   }
 
-  let arrayLabels = [] 
-  let arrayValues= []
+  //Split in 2 array labels and their respective values
+  let arrayLabels = []
+  let arrayValues = []
   for (const [label, value] of Object.entries(labelsValueObj)) {
     arrayLabels.push(label)
     arrayValues.push(value)
