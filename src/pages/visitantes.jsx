@@ -163,7 +163,7 @@ export default function Visitantes(props) {
   };
 
   useEffect(() => {
-
+    // idle
   },[])
 
   
