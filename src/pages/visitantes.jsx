@@ -107,7 +107,6 @@ export default function Visitantes(props) {
     return visitorsTimeLine
   }
 
-
   const parseDate = (dateString) =>{
     // convert "YYYYMMDDThhmmss" to date
     const year = parseInt(dateString.substring(0, 4), 10);
@@ -119,35 +118,52 @@ export default function Visitantes(props) {
     return new Date(year, month, day, hours, minutes, seconds);
   }
 
-  const estructurarData = (registros, dateIndex) => {
+  const estructurarData = (visitorsTimeLine, dateIndex) => {
     // dateIndex gives information about what date source was changed
-    const labelsValueObj = {}
+    
+    // out: Max visitors registered in an interval. If there are no registers in some interval it keeps the last register.
+    // [{interval: "06", visitors: 1}, {interval: "07", visitors: 3}, ... ]
+    const intervals = ['06H00', '07H00', '08H00', '09H00', '10H00', '11H00', '12H00', '13H00', '14H00', '15H00', '16H00', '17H00', '18H00']
     // {label1: valueLabel1, label2: valueLabel2 ....}
-    // Counts how many events have been happened (axis y) for each label(axis x)
-    for (let i = 0; i < registros.length; i++) {
-      let label = registros[i]["hora"]
-      labelsValueObj[label] = labelsValueObj[label] ? labelsValueObj[label] + 1 : 1;
-    }
-
-    //Split in 2 arrays labels and their respective values
-    let arrayLabels = []
-    let arrayValues = []
-    for (const [label, value] of Object.entries(labelsValueObj)) {
-      arrayLabels.push(label)
-      arrayValues.push(value)
+    let lastVisitors = visitorsTimeLine[0].visitors // it is needed to give the count of visitors when there are not registers from this interval
+    let intervalVisitorsData = []
+    for (let interval of intervals){
+      // filter all register in each interval
+      //let maxVisitorsObject = null;
+      let maxVisitorsValue = 0
+      let registrosIntervalo = visitorsTimeLine.filter(registro => registro.hora === interval.substring(0, 2))
+      
+      if (registrosIntervalo.length === 0) {
+        //maxVisitorsObject = { interval: interval, visitors: lastVisitors }
+        maxVisitorsValue = lastVisitors
+      }else{
+        lastVisitors = registrosIntervalo[registrosIntervalo.length].visitors
+        let maxVisitors = -Infinity;
+        
+        for (const registro of registrosIntervalo) {
+          const visitors = registro.visitors;
+          if (visitors > maxVisitors) {
+            maxVisitors = visitors;
+          }
+        }
+        // maxVisitorsObject = { interval: interval, visitors: maxVisitors };
+        maxVisitorsValue = maxVisitors
+      }
+      //intervalVisitorsData.push(maxVisitorsObject)
+      intervalVisitorsData.push(maxVisitorsValue)
     }
 
     let { datasets } = dataLineChartVisitors
     datasets[dateIndex]= {
       label: 'Día ' + (dateIndex + 1).toString(),
-      data: arrayValues,
+      data: intervalVisitorsData,
       fill: false,
       borderColor: dateIndex===0?"blue":"red",
       tension: 0.4
     }
 
     const data ={
-      labels: arrayLabels,
+      labels: intervals,
       datasets: datasets
     }
 
