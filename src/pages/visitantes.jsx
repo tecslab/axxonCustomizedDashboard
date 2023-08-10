@@ -27,7 +27,7 @@ export default function Visitantes(props) {
         .then(data => {
         let _peopleOut = data.events
         let visitorsTimeLine = getVisitors(mergeInTimeLine(_peopleIn, _peopleOut))
-        setDataLineChartVisitors(estructurarData(visitorsTimeLine))
+        setDataLineChartVisitors(estructurarData(visitorsTimeLine, 1))
       })
     })
   }
@@ -46,7 +46,7 @@ export default function Visitantes(props) {
         let _peopleOut = data.events
 
         let visitorsTimeLine = getVisitors(mergeInTimeLine(_peopleIn, _peopleOut))
-        setDataLineChartVisitors(estructurarData(visitorsTimeLine))
+        setDataLineChartVisitors(estructurarData(visitorsTimeLine, 2))
       })
     })
   }
@@ -144,20 +144,13 @@ export default function Visitantes(props) {
       fill: false,
       borderColor: dateIndex===0?"blue":"red",
       tension: 0.4
-    }    
+    }
 
     const data ={
       labels: arrayLabels,
-      datasets: [
-        {
-          label: 'Día1',
-          data: arrayValues,
-          fill: false,
-          borderColor: "blue",
-          tension: 0.4
-        }
-      ]
+      datasets: datasets
     }
+
     return data
   }
 
@@ -192,7 +185,22 @@ export default function Visitantes(props) {
   };
 
   useEffect(() => {
-    // idle2
+    let today = new Date()
+    setDate1(today)
+    let formattedDate = dateInFormat(today)
+    let initDate = formattedDate.substring(0, 8) + 'T060000'
+    let finishDate = formattedDate.substring(0, 8) + 'T180000'
+
+    restAPI.getPeopleIn(initDate, finishDate)
+    .then(data => {
+      let _peopleIn = data.events
+      restAPI.getPeopleOut(initDate, finishDate)
+        .then(data => {
+        let _peopleOut = data.events
+        let visitorsTimeLine = getVisitors(mergeInTimeLine(_peopleIn, _peopleOut))
+        setDataLineChartVisitors(estructurarData(visitorsTimeLine, 1))
+      })
+    })
   },[])
 
   
