@@ -86,7 +86,7 @@ export default function Visitantes(props) {
   }
   
   const isTheFirstTimestampLower = (timestamp1, timestamp2) =>{
-    // anser if the first of 2 events has the lower timestamp
+    // answer if the first of 2 events has the lower timestamp
     const date1 = parseDate(timestamp1);
     const date2 = parseDate(timestamp2);
   
