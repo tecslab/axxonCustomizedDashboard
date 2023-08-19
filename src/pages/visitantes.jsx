@@ -121,7 +121,7 @@ export default function Visitantes(props) {
   const dataToStdFormat = (eventsArray) =>{
     // transform the data to standar format (date)
     eventsArray.forEach(_event=>{
-      _event.timestamp = parseDate(_event.timestamp)
+      _event.timestamp = UTCTransform({type: "toCurrentUTC", date: parseDate(_event.timestamp)})      
     })
     return eventsArray
   }
