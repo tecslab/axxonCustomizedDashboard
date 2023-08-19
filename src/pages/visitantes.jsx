@@ -2,16 +2,19 @@ import React, { useState, useEffect } from 'react'
 import { Chart } from 'primereact/chart';
 import { Calendar } from 'primereact/calendar';
 import { genDataBarStacked, genDataLine, dateInFormat,
-   detectionStartTime, detectionFinishTime, UTCTransform, 
-   parseDate } from "../parametrosGlobales"
+    UTCTransform, parseDate } from "../parametrosGlobales"
+let {detectionStartTime, detectionFinishTime} = parametrosGlobales
+import parametrosGlobales from "../parametrosGlobales"
 import { RestAPI } from "../utilities/restAPI"
 
 export default function Visitantes(props) {
   const restAPI = new RestAPI();
   const [date1, setDate1] = useState(null);
   const [date2, setDate2] = useState(null);
+  const [day1FacesCount, setDay1FacesCount] = useState(null)
+  const [day2FacesCount, setDay2FacesCount] = useState(null)
   const [dataLineChartVisitors, setDataLineChartVisitors] = useState({
-    labels: ["06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17"],
+    labels: ["09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21"],
     datasets: []
   });
 
@@ -20,12 +23,12 @@ export default function Visitantes(props) {
     let initDate = new Date(date)
     initDate.setHours(detectionStartTime.substring(0, 2))
     initDate.setMinutes(detectionStartTime.substring(2, 4))
-    formattedInitDate = dateInFormat(UTCTransform({type: "toUTC0", date: initDate}))
+    let formattedInitDate = dateInFormat(UTCTransform({type: "toUTC0", date: initDate}))
 
     let finishDate = new Date(date)
     finishDate.setHours(detectionFinishTime.substring(0, 2))
     finishDate.setMinutes(detectionFinishTime.substring(2, 4))
-    formattedFinishDate = dateInFormat(UTCTransform({type: "toUTC0", date: finishDate}))
+    let formattedFinishDate = dateInFormat(UTCTransform({type: "toUTC0", date: finishDate}))
 
     return {formattedInitDate, formattedFinishDate}
   }
@@ -46,6 +49,13 @@ export default function Visitantes(props) {
         setDataLineChartVisitors(estructurarData(visitorsTimeLine, 1))
       })
     })
+
+    restAPI.getFaces({initDate, finishDate})
+    .then(data=>{
+      let facesEvents = dataToStdFormat(data.events)
+      let facesMap = getFacesCount(facesEvents)      
+      setDay1FacesCount(facesMap.size)
+    })
   }
 
   const onChangeDate2 = (e) =>{
@@ -64,6 +74,13 @@ export default function Visitantes(props) {
         let visitorsTimeLine = getVisitors(mergeInTimeLine(_peopleIn, _peopleOut))
         setDataLineChartVisitors(estructurarData(visitorsTimeLine, 2))
       })
+    })
+
+    restAPI.getFaces({initDate, finishDate})
+    .then(data=>{
+      let facesEvents = dataToStdFormat(data.events)
+      let facesMap = getFacesCount(facesEvents)      
+      setDay2FacesCount(facesMap.size)
     })
   }
 
@@ -208,6 +225,22 @@ export default function Visitantes(props) {
     }
   };
 
+  const getFacesCount = (facesEvents) =>{
+    let facesMap = new Map()
+    facesEvents.forEach(faceEvent =>{
+      let faceId = faceEvent.rectangles[0]["index"]
+      let existingFace = facesMap.get(faceId)
+      if (existingFace){
+        let newCount = existingFace.seenCounter++
+        facesMap.set(faceId, {seenCounter: newCount})
+      }else{
+        let faceObj = {seenCounter: 0}
+        facesMap.set(faceId, faceObj)
+      }
+    })
+    return (facesMap)
+  }
+
   useEffect(() => {
     let today = new Date()
     setDate1(today)
@@ -225,6 +258,14 @@ export default function Visitantes(props) {
         let visitorsTimeLine = getVisitors(mergeInTimeLine(_peopleIn, _peopleOut))
         setDataLineChartVisitors(estructurarData(visitorsTimeLine, 1))
       })
+    })
+
+    restAPI.getFaces({initDate, finishDate})
+    .then(data=>{
+      console.log("WHY!!!!!!")
+      let facesEvents = dataToStdFormat(data.events)
+      let facesMap = getFacesCount(facesEvents)      
+      setDay1FacesCount(facesMap.size)
     })
   },[])
 
@@ -251,6 +292,22 @@ export default function Visitantes(props) {
         <div className="col-12">
           <div className="card">
             <Chart type="line" data={dataLineChartVisitors} options={options} />
+          </div>
+        </div>
+
+        <div className="col-6">
+          <div className="card flex justify-content-center">
+            <h2>Día 1</h2>
+            <span>Cantidad de visitantes: </span>
+            <span>{day1FacesCount}</span>
+          </div>
+        </div>
+
+        <div className="col-6">
+          <div className="card flex justify-content-center">
+            <h2>Día 2</h2>
+            <span>Cantidad de visitantes: </span>
+            <span>{day2FacesCount}</span>
           </div>
         </div>
           

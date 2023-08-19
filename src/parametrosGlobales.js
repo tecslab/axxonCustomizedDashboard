@@ -8,7 +8,8 @@ let parametrosGlobales = {
   password: "root",
   utc: -5,
   detectionStartTime: "0900", // Hora en formato hhmm
-  detectionFinishTime: "2100"
+  detectionFinishTime: "2100",
+  vEntranceCamera: "/",  // vertical Entrance Camara, used for visitors counting
 }
 
 
@@ -46,7 +47,7 @@ export const UTCTransform = ({type, date}) =>{
   }else if(type==="toCurrentUTC"){
     newDate = date.getTime() + (parametrosGlobales.utc * 60 * 60 * 1000);
   }
-  return newDate;
+  return new Date(newDate);
 }
 
 // This function get a random color with some restrictions
