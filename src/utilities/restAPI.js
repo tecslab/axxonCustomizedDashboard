@@ -1,14 +1,13 @@
 import parametrosGlobales from "../parametrosGlobales"
 let {axxonOneServer, axxonOnePort, prefix, user,
-   password, dateInFormat, UTCTransform, 
-   detectionStartTime, detectionFinishTime, vEntranceCamera} =  parametrosGlobales
+   password, vEntranceCamera} =  parametrosGlobales
 
 export class RestAPI {
 
   getPeopleIn({initDate, finishDate}){
 
     let baseURI = "http://" + axxonOneServer + ":" + axxonOnePort + prefix
-    let uriPeopleIn = baseURI + 'archive/events/detectors' + vEntranceCamera + initDate + "/" + finishDate + "?type=PeopleIn"
+    let uriPeopleIn = baseURI + 'archive/events/detectors' + vEntranceCamera + initDate + "/" + finishDate + "?type=PeopleIn&limit=600"
     console.log(uriPeopleIn)
     const headers = new Headers();
     headers.set('Authorization', 'Basic ' + btoa(user + ':' + password));
@@ -23,7 +22,7 @@ export class RestAPI {
 
   getPeopleOut({initDate, finishDate}){
     let baseURI = "http://" + axxonOneServer + ":" + axxonOnePort + prefix
-    let uriPeopleOut = baseURI + 'archive/events/detectors' + vEntranceCamera + initDate + "/" + finishDate + "?type=PeopleOut"
+    let uriPeopleOut = baseURI + 'archive/events/detectors' + vEntranceCamera + initDate + "/" + finishDate + "?type=PeopleOut&limit=600"
     const headers = new Headers();
     headers.set('Authorization', 'Basic ' + btoa(user + ':' + password));
     console.log(uriPeopleOut)
@@ -37,7 +36,7 @@ export class RestAPI {
 
   getFaces({initDate, finishDate}){
     let baseURI = "http://" + axxonOneServer + ":" + axxonOnePort + prefix
-    let uriFaceAppeared = baseURI + 'archive/events/detectors/'+ initDate + "/" + finishDate + "?type=faceAppeared"
+    let uriFaceAppeared = baseURI + 'archive/events/detectors/'+ initDate + "/" + finishDate + "?type=faceAppeared&limit=600"
     const headers = new Headers();
     headers.set('Authorization', 'Basic ' + btoa(user + ':' + password));
     return fetch(uriFaceAppeared, {headers})
