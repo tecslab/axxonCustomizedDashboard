@@ -1,2 +1,6 @@
 Desarrollado por: Pablo Esteban Villota, villota.dev@gmail.com
 Este proyecto usa Prime react para la estilización de componentes y bootstrap 5 para el sistema de grid
+
+Frequent problems:
+The axxon server port is wrong
+The CORS property is set in NO

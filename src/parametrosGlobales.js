@@ -5,7 +5,10 @@ let parametrosGlobales = {
   axxonOnePort: "82",
   prefix:"/",
   user: "root",
-  password: "root"
+  password: "root",
+  utc: -5,
+  detectionStartTime: "0900", // Hora en formato hhmm
+  detectionFinishTime: "2100"
 }
 
 
@@ -23,6 +26,28 @@ export const dateInFormat = (date) => {
   return formattedDate;
 }
 
+export const parseDate = (dateString) =>{
+  // convert "YYYYMMDDThhmmss" to date
+  const year = parseInt(dateString.substring(0, 4), 10);
+  const month = parseInt(dateString.substring(4, 6), 10) - 1;
+  const day = parseInt(dateString.substring(6, 8), 10);
+  const hours = parseInt(dateString.substring(9, 11), 10);
+  const minutes = parseInt(dateString.substring(11, 13), 10);
+  const seconds = parseInt(dateString.substring(13, 15), 10);  
+  return new Date(year, month, day, hours, minutes, seconds);
+}
+
+export const UTCTransform = ({type, date}) =>{
+  // type: can be toUTC0 or toCurrentUTC
+  // utc is the number of utc time zone
+  let newDate;
+  if (type==="toUTC0"){
+    newDate = date.getTime() + (-parametrosGlobales.utc * 60 * 60 * 1000);
+  }else if(type==="toCurrentUTC"){
+    newDate = date.getTime() + (parametrosGlobales.utc * 60 * 60 * 1000);
+  }
+  return newDate;
+}
 
 // This function get a random color with some restrictions
 export const getRandomHexColor = () => {
