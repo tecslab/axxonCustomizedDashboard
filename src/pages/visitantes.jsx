@@ -13,6 +13,8 @@ export default function Visitantes(props) {
   const [date2, setDate2] = useState(null);
   const [day1FacesCount, setDay1FacesCount] = useState(null)
   const [day2FacesCount, setDay2FacesCount] = useState(null)
+  const [visitorsEvents1, setVisitorsEvents1] = useState({peopleIn:[], peopleOut:[]})
+  const [visitorsEvents2, setVisitorsEvents2] = useState({peopleIn:[], peopleOut:[]})
   const [dataLineChartVisitors, setDataLineChartVisitors] = useState({
     labels: ["09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21"],
     datasets: []
@@ -41,11 +43,12 @@ export default function Visitantes(props) {
 
     restAPI.getPeopleIn({initDate, finishDate})
     .then(data => {
-      let _peopleIn = dataToStdFormat(data.events)
+      let peopleIn = dataToStdFormat(data.events)
       restAPI.getPeopleOut({initDate, finishDate})
         .then(data => {
-        let _peopleOut = dataToStdFormat(data.events)
-        let visitorsTimeLine = getVisitors(mergeInTimeLine(_peopleIn, _peopleOut))
+        let peopleOut = dataToStdFormat(data.events)
+        setVisitorsEvents1({peopleIn, peopleOut})
+        let visitorsTimeLine = getVisitors(mergeInTimeLine(peopleIn, peopleOut))
         setDataLineChartVisitors(estructurarData(visitorsTimeLine, 1))
       })
     })
@@ -66,12 +69,12 @@ export default function Visitantes(props) {
 
     restAPI.getPeopleIn({initDate, finishDate})
     .then(data => {
-      let _peopleIn = dataToStdFormat(data.events)
+      let peopleIn = dataToStdFormat(data.events)
       restAPI.getPeopleOut({initDate, finishDate})
         .then(data => {
-        let _peopleOut = dataToStdFormat(data.events)
-
-        let visitorsTimeLine = getVisitors(mergeInTimeLine(_peopleIn, _peopleOut))
+        let peopleOut = dataToStdFormat(data.events)
+        setVisitorsEvents1({peopleIn, peopleOut})
+        let visitorsTimeLine = getVisitors(mergeInTimeLine(peopleIn, peopleOut))
         setDataLineChartVisitors(estructurarData(visitorsTimeLine, 2))
       })
     })
@@ -83,6 +86,35 @@ export default function Visitantes(props) {
       setDay2FacesCount(facesMap.size)
     })
   }
+
+  useEffect(() => {
+    let today = new Date()
+    setDate1(today)
+    const intervalDate = getIntervalDate(today)
+    const initDate = intervalDate.formattedInitDate
+    const finishDate = intervalDate.formattedFinishDate
+
+    restAPI.getPeopleIn({initDate, finishDate})
+    .then(data => {
+      console.log(data)
+      let _peopleIn = dataToStdFormat(data.events)
+      restAPI.getPeopleOut({initDate, finishDate})
+        .then(data => {
+        let _peopleOut = dataToStdFormat(data.events)
+        setVisitorsEvents1({peopleIn, peopleOut})
+        let visitorsTimeLine = getVisitors(mergeInTimeLine(_peopleIn, _peopleOut))
+        setDataLineChartVisitors(estructurarData(visitorsTimeLine, 1))
+      })
+    })
+
+    restAPI.getFaces({initDate, finishDate})
+    .then(data=>{
+      console.log("WHY!!!!!!")
+      let facesEvents = dataToStdFormat(data.events)
+      let facesMap = getFacesCount(facesEvents)      
+      setDay1FacesCount(facesMap.size)
+    })
+  },[])
 
   const mergeInTimeLine = (eventsArray1, eventsArray2) =>{
     // merge 2 array of events in one ordered Time line array
@@ -143,7 +175,6 @@ export default function Visitantes(props) {
   const estructurarData = (visitorsTimeLine, dateIndex) => {
     //console.log(visitorsTimeLine)
     // dateIndex gives information about what date source was changed
-    
     // out: Max visitors registered in an interval. If there are no registers in some interval it keeps the last register.
     // [{interval: "06", visitors: 1}, {interval: "07", visitors: 3}, ... ]
     const intervals = ['09H00', '10H00', '11H00', '12H00', '13H00', '14H00', '15H00', '16H00', '17H00', '18H00', '19H00', '20H00', '21H00']
@@ -240,35 +271,6 @@ export default function Visitantes(props) {
     })
     return (facesMap)
   }
-
-  useEffect(() => {
-    let today = new Date()
-    setDate1(today)
-    const intervalDate = getIntervalDate(today)
-    const initDate = intervalDate.formattedInitDate
-    const finishDate = intervalDate.formattedFinishDate
-
-    restAPI.getPeopleIn({initDate, finishDate})
-    .then(data => {
-      console.log(data)
-      let _peopleIn = dataToStdFormat(data.events)
-      restAPI.getPeopleOut({initDate, finishDate})
-        .then(data => {
-        let _peopleOut = dataToStdFormat(data.events)
-        let visitorsTimeLine = getVisitors(mergeInTimeLine(_peopleIn, _peopleOut))
-        setDataLineChartVisitors(estructurarData(visitorsTimeLine, 1))
-      })
-    })
-
-    restAPI.getFaces({initDate, finishDate})
-    .then(data=>{
-      console.log("WHY!!!!!!")
-      let facesEvents = dataToStdFormat(data.events)
-      let facesMap = getFacesCount(facesEvents)      
-      setDay1FacesCount(facesMap.size)
-    })
-  },[])
-
   
   return (
     <>
@@ -300,6 +302,12 @@ export default function Visitantes(props) {
             <h2>Día 1</h2>
             <span>Cantidad de visitantes: </span>
             <span>{day1FacesCount}</span>
+            <br/>
+            <span>Eventos In: </span>
+            <span>{visitorsEvents1.peopleIn.length}</span>
+            <br/>
+            <span>Eventos Out: </span>
+            <span>{visitorsEvents1.peopleOut.length}</span>
           </div>
         </div>
 
@@ -308,6 +316,12 @@ export default function Visitantes(props) {
             <h2>Día 2</h2>
             <span>Cantidad de visitantes: </span>
             <span>{day2FacesCount}</span>
+            <br/>
+            <span>Eventos In: </span>
+            <span>{visitorsEvents2.peopleIn.length}</span>
+            <br/>
+            <span>Eventos Out: </span>
+            <span>{visitorsEvents2.peopleOut.length}</span>
           </div>
         </div>
           
