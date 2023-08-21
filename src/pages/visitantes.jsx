@@ -97,12 +97,13 @@ export default function Visitantes(props) {
     restAPI.getPeopleIn({initDate, finishDate})
     .then(data => {
       console.log(data)
-      let _peopleIn = dataToStdFormat(data.events)
+      let peopleIn = dataToStdFormat(data.events)
       restAPI.getPeopleOut({initDate, finishDate})
         .then(data => {
-        let _peopleOut = dataToStdFormat(data.events)
+        console.log(data)
+        let peopleOut = dataToStdFormat(data.events)
         setVisitorsEvents1({peopleIn, peopleOut})
-        let visitorsTimeLine = getVisitors(mergeInTimeLine(_peopleIn, _peopleOut))
+        let visitorsTimeLine = getVisitors(mergeInTimeLine(peopleIn, peopleOut))
         setDataLineChartVisitors(estructurarData(visitorsTimeLine, 1))
       })
     })
@@ -159,13 +160,11 @@ export default function Visitantes(props) {
   }
 
   const getVisitors = (eventsTimeline) => {
-    console.log(eventsTimeline)
     //get the visitors timeline
     let visitorsTimeLine = [{hora: detectionStartTime.substring(0, 2), visitors: 0}]
     for (let i=0; i<eventsTimeline.length; i++){
       let hora = eventsTimeline[i]["timestamp"].getHours().toString().padStart(2, '0'); // para tomar solo la hora
       let currentVisitorsCount = visitorsTimeLine[visitorsTimeLine.length-1]["visitors"] // última cuenta de visitantes
-      //console.log(currentVisitorsCount)
       eventsTimeline[i].type==="PeopleIn"?currentVisitorsCount++:currentVisitorsCount--
       visitorsTimeLine.push({hora: hora, visitors: currentVisitorsCount})
     }
@@ -173,7 +172,6 @@ export default function Visitantes(props) {
   }
 
   const estructurarData = (visitorsTimeLine, dateIndex) => {
-    //console.log(visitorsTimeLine)
     // dateIndex gives information about what date source was changed
     // out: Max visitors registered in an interval. If there are no registers in some interval it keeps the last register.
     // [{interval: "06", visitors: 1}, {interval: "07", visitors: 3}, ... ]
@@ -181,7 +179,6 @@ export default function Visitantes(props) {
     // {label1: valueLabel1, label2: valueLabel2 ....}
     let lastVisitors = visitorsTimeLine[0].visitors // it is needed to give the count of visitors when there are not registers from this interval
     let intervalVisitorsData = []
-    //console.log(visitorsTimeLine)
     for (let interval of intervals){
       // filter all register in each interval
       //let maxVisitorsObject = null;
@@ -221,7 +218,6 @@ export default function Visitantes(props) {
       labels: intervals,
       datasets: datasets
     }
-    console.log(data)
 
     return data
   }
