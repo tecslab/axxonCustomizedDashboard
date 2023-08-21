@@ -73,7 +73,7 @@ export default function Visitantes(props) {
       restAPI.getPeopleOut({initDate, finishDate})
         .then(data => {
         let peopleOut = dataToStdFormat(data.events)
-        setVisitorsEvents1({peopleIn, peopleOut})
+        setVisitorsEvents2({peopleIn, peopleOut})
         let visitorsTimeLine = getVisitors(mergeInTimeLine(peopleIn, peopleOut))
         setDataLineChartVisitors(estructurarData(visitorsTimeLine, 2))
       })
@@ -296,7 +296,7 @@ export default function Visitantes(props) {
         <div className="col-6">
           <div className="card flex justify-content-center">
             <h2>Día 1</h2>
-            <span>Cantidad de visitantes: </span>
+            <span>Cantidad de rostros: </span>
             <span>{day1FacesCount}</span>
             <br/>
             <span>Eventos In: </span>
@@ -310,7 +310,7 @@ export default function Visitantes(props) {
         <div className="col-6">
           <div className="card flex justify-content-center">
             <h2>Día 2</h2>
-            <span>Cantidad de visitantes: </span>
+            <span>Cantidad de rostros: </span>
             <span>{day2FacesCount}</span>
             <br/>
             <span>Eventos In: </span>
