@@ -9,7 +9,8 @@ let parametrosGlobales = {
   utc: -5,
   detectionStartTime: "0900", // Hora en formato hhmm
   detectionFinishTime: "2100",
-  vEntranceCamera: "/SVRCAMARAS/DeviceIpint.3/SourceEndpoint.video:0:0/",  // vertical Entrance Camara, used for visitors counting
+  //vEntranceCamera: "/SVRCAMARAS/DeviceIpint.3/SourceEndpoint.video:0:0/",  // vertical Entrance Camara, used for visitors counting
+  vEntranceCamera: "SVRCAMARAS/DeviceIpint.2/SourceEndpoint.video:0:0"
 }
 
 
