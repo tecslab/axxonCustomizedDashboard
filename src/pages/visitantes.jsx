@@ -267,6 +267,8 @@ export default function Visitantes(props) {
     })
     return (facesMap)
   }
+
+  //const toFormat
   
   return (
     <>
