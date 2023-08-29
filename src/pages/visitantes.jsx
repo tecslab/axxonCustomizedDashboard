@@ -312,8 +312,8 @@ export default function Visitantes(props) {
         <div className="col-6">
           <div className="card flex justify-content-center">
             <h2>{date1?getDateString(date1):"Día 1"}</h2>
-            <span>Cantidad de rostros: </span>
-            <span>{day1FacesCount}</span>
+            {/* <span>Cantidad de rostros: </span>
+            <span>{day1FacesCount}</span> */}
             <br/>
             <span>Eventos In: </span>
             <span>{visitorsEvents1.peopleIn.length}</span>
@@ -326,8 +326,8 @@ export default function Visitantes(props) {
         <div className="col-6">
           <div className="card flex justify-content-center">
             <h2>{date2?getDateString(date2):"Día 2"}</h2>
-            <span>Cantidad de rostros: </span>
-            <span>{day2FacesCount}</span>
+            {/* <span>Cantidad de rostros: </span>
+            <span>{day2FacesCount}</span> */}
             <br/>
             <span>Eventos In: </span>
             <span>{visitorsEvents2.peopleIn.length}</span>
