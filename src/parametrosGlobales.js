@@ -1,7 +1,8 @@
 let parametrosGlobales = {
   //urlBack: "http://localhost:3000",
-  axxonOneServer: "127.0.0.1",
+  //axxonOneServer: "127.0.0.1",
   // axxonOneServer: "localhost",
+  axxonOneServer: "192.168.2.43",
   axxonOnePort: "82",
   prefix:"/",
   user: "root",
@@ -17,6 +18,7 @@ let parametrosGlobales = {
 // Common Functions
 
 export const dateInFormat = (date) => {
+  // Convert to format "YYYYMMDDThhmmss" 
   const year = date.getFullYear().toString();
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
   const day = date.getDate().toString().padStart(2, '0');

@@ -13,6 +13,7 @@ export default function Visitantes(props) {
   const [date2, setDate2] = useState(null);
   const [day1FacesCount, setDay1FacesCount] = useState(null)
   const [day2FacesCount, setDay2FacesCount] = useState(null)
+  const [currentVisitors, setCurrentVisitors] = useState(0)
   const [visitorsEvents1, setVisitorsEvents1] = useState({peopleIn:[], peopleOut:[]})
   const [visitorsEvents2, setVisitorsEvents2] = useState({peopleIn:[], peopleOut:[]})
   const [dataLineChartVisitors, setDataLineChartVisitors] = useState({
@@ -104,13 +105,14 @@ export default function Visitantes(props) {
         let peopleOut = dataToStdFormat(data.events)
         setVisitorsEvents1({peopleIn, peopleOut})
         let visitorsTimeLine = getVisitors(mergeInTimeLine(peopleIn, peopleOut))
+        setCurrentVisitors(visitorsTimeLine[visitorsTimeLine.length-1]["visitors"])
         setDataLineChartVisitors(estructurarData(visitorsTimeLine, 1))
       })
     })
 
     restAPI.getFaces({initDate, finishDate})
     .then(data=>{
-      console.log("WHY!!!!!!")
+      console.log(data)
       let facesEvents = dataToStdFormat(data.events)
       let facesMap = getFacesCount(facesEvents)      
       setDay1FacesCount(facesMap.size)
@@ -152,7 +154,7 @@ export default function Visitantes(props) {
   }
 
   const dataToStdFormat = (eventsArray) =>{
-    // transform the data to standar format (date)
+    // transform the events array data to standar format (date)
     eventsArray.forEach(_event=>{
       _event.timestamp = UTCTransform({type: "toCurrentUTC", date: parseDate(_event.timestamp)})      
     })
@@ -268,12 +270,19 @@ export default function Visitantes(props) {
     return (facesMap)
   }
 
-  //const toFormat
+  const getDateString = (date) =>{
+    const year = date.getFullYear().toString();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+
+    const dateString = `${day}/${month}/${year}`;
+    return dateString;
+  }
   
   return (
     <>
       <div className="row mt-3">
-      <div className="col-12">
+        <div className="col-12">
           <div className="card flex justify-content-center">
             <h1>Visitantes máximos por hora</h1>
           </div>
@@ -295,9 +304,14 @@ export default function Visitantes(props) {
           </div>
         </div>
 
+        <div className="col-12">
+          <span>Visitantes Actuales: </span>
+          <span>{currentVisitors}</span>
+        </div>
+
         <div className="col-6">
           <div className="card flex justify-content-center">
-            <h2>Día 1</h2>
+            <h2>{date1?getDateString(date1):"Día 1"}</h2>
             <span>Cantidad de rostros: </span>
             <span>{day1FacesCount}</span>
             <br/>
@@ -311,7 +325,7 @@ export default function Visitantes(props) {
 
         <div className="col-6">
           <div className="card flex justify-content-center">
-            <h2>Día 2</h2>
+            <h2>{date2?getDateString(date2):"Día 2"}</h2>
             <span>Cantidad de rostros: </span>
             <span>{day2FacesCount}</span>
             <br/>
