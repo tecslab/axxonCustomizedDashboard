@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { Chart } from 'primereact/chart';
 import { Calendar } from 'primereact/calendar';
 import { genDataBarStacked, genDataLine, dateInFormat,
-    UTCTransform, parseDate } from "../parametrosGlobales"
-let {detectionStartTime, detectionFinishTime} = parametrosGlobales
+  UTCTransform, parseDate } from "../parametrosGlobales"
+  let {detectionStartTime, detectionFinishTime} = parametrosGlobales
 import parametrosGlobales from "../parametrosGlobales"
 import { RestAPI } from "../utilities/restAPI"
-
+import ExcelDownloadButton from '../components/createExcelButton';
+const timeIntervals = ['09H00', '10H00', '11H00', '12H00', '13H00', '14H00', '15H00', '16H00', '17H00', '18H00', '19H00', '20H00', '21H00']
+  
 export default function Visitantes(props) {
   const restAPI = new RestAPI();
   const [date1, setDate1] = useState(null);
@@ -14,6 +16,8 @@ export default function Visitantes(props) {
   const [day1FacesCount, setDay1FacesCount] = useState(null)
   const [day2FacesCount, setDay2FacesCount] = useState(null)
   const [currentVisitors, setCurrentVisitors] = useState(0)
+  const [countTimeline1, setCountTimeLine1] = useState([])
+  const [countTimeline2, setCountTimeLine2] = useState([])
   const [visitorsEvents1, setVisitorsEvents1] = useState({peopleIn:[], peopleOut:[]})
   const [visitorsEvents2, setVisitorsEvents2] = useState({peopleIn:[], peopleOut:[]})
   const [dataLineChartVisitors, setDataLineChartVisitors] = useState({
@@ -48,8 +52,10 @@ export default function Visitantes(props) {
       restAPI.getPeopleOut({initDate, finishDate})
         .then(data => {
         let peopleOut = dataToStdFormat(data.events)
+        let _countTimeLine = mergeInTimeLine(peopleIn, peopleOut)
+        let visitorsTimeLine = getVisitors(_countTimeLine)
         setVisitorsEvents1({peopleIn, peopleOut})
-        let visitorsTimeLine = getVisitors(mergeInTimeLine(peopleIn, peopleOut))
+        setCountTimeLine1(_countTimeLine)
         setDataLineChartVisitors(estructurarData(visitorsTimeLine, 1))
       })
     })
@@ -74,8 +80,10 @@ export default function Visitantes(props) {
       restAPI.getPeopleOut({initDate, finishDate})
         .then(data => {
         let peopleOut = dataToStdFormat(data.events)
+        let _countTimeLine = mergeInTimeLine(peopleIn, peopleOut)
+        let visitorsTimeLine = getVisitors(_countTimeLine)
         setVisitorsEvents2({peopleIn, peopleOut})
-        let visitorsTimeLine = getVisitors(mergeInTimeLine(peopleIn, peopleOut))
+        setCountTimeLine2(_countTimeLine)
         setDataLineChartVisitors(estructurarData(visitorsTimeLine, 2))
       })
     })
@@ -103,9 +111,10 @@ export default function Visitantes(props) {
         .then(data => {
         console.log(data)
         let peopleOut = dataToStdFormat(data.events)
+        let _countTimeLine = mergeInTimeLine(peopleIn, peopleOut)
+        let visitorsTimeLine = getVisitors(_countTimeLine)
         setVisitorsEvents1({peopleIn, peopleOut})
-        let visitorsTimeLine = getVisitors(mergeInTimeLine(peopleIn, peopleOut))
-        setCurrentVisitors(visitorsTimeLine[visitorsTimeLine.length-1]["visitors"])
+        setCountTimeLine1(_countTimeLine)
         setDataLineChartVisitors(estructurarData(visitorsTimeLine, 1))
       })
     })
@@ -177,11 +186,10 @@ export default function Visitantes(props) {
     // dateIndex gives information about what date source was changed
     // out: Max visitors registered in an interval. If there are no registers in some interval it keeps the last register.
     // [{interval: "06", visitors: 1}, {interval: "07", visitors: 3}, ... ]
-    const intervals = ['09H00', '10H00', '11H00', '12H00', '13H00', '14H00', '15H00', '16H00', '17H00', '18H00', '19H00', '20H00', '21H00']
     // {label1: valueLabel1, label2: valueLabel2 ....}
     let lastVisitors = visitorsTimeLine[0].visitors // it is needed to give the count of visitors when there are not registers from this interval
     let intervalVisitorsData = []
-    for (let interval of intervals){
+    for (let interval of timeIntervals){
       // filter all register in each interval
       //let maxVisitorsObject = null;
       let maxVisitorsValue = 0
@@ -217,11 +225,61 @@ export default function Visitantes(props) {
     }
 
     const data ={
-      labels: intervals,
+      labels: timeIntervals,
       datasets: datasets
     }
 
     return data
+  }
+
+  const getFormatExcelData = (timeLine, date) =>{
+    let excelData = [["DIRECCION_ip", "TIENDA", "ENTRADAS", "SALIDAS", "dia", "mes", "anio", "DIASEM", "hora", "SEMANA", "SOLOHORA", "DIA_SEMANA", "FECHAHORA"]]
+    const year = date.getFullYear().toString();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const dayOfWeek = date.getDay() + 1
+
+    let stringDay;
+    switch (dayOfWeek){
+      case 1:
+        stringDay = "Domingo"
+        break;
+      case 2:
+        stringDay = "Lunes"
+        break;
+      case 3:
+        stringDay = "Martes"
+        break;
+      case 4:
+        stringDay = "Miercoles"
+        break;
+      case 5:
+        stringDay = "Jueves"
+        break;
+      case 6:
+        stringDay = "Viernes"
+        break;
+      case 7:
+        stringDay = "Sábado"
+        break;
+      default:
+        stringDay = ""
+    }
+
+    for (let interval of timeIntervals){
+      // filter all register in each interval
+      let registrosIntervalo = timeLine.filter(registro => registro["timestamp"].getHours().toString().padStart(2, '0') === interval.substring(0, 2))
+
+      let registrosIn = registrosIntervalo.filter(registro=>{ registro.type === "PeopleIn"})
+      let registrosOut = registrosIntervalo.filter(registro=>{ registro.type === "PeopleOut"})
+
+      let countIn = registrosIn.length
+      let countOut = registrosOut.length
+
+      let rowData = ["", "Colineal", countIn, countOut, day, month, year, dayOfWeek, interval, "", interval.substring(0, 2), stringDay, `${year}-${month}-${day}`]
+      excelData.push(rowData)
+    }
+    return excelData
   }
 
   const options = {
@@ -320,6 +378,10 @@ export default function Visitantes(props) {
             <br/>
             <span>Eventos Out: </span>
             <span>{visitorsEvents1.peopleOut.length}</span>
+            {countTimeline1.length>0?
+              <ExcelDownloadButton data={getFormatExcelData(countTimeline1, date1)}/>
+              :null
+            }
           </div>
         </div>
 
@@ -334,6 +396,10 @@ export default function Visitantes(props) {
             <br/>
             <span>Eventos Out: </span>
             <span>{visitorsEvents2.peopleOut.length}</span>
+            {countTimeline2.length>0?
+              <ExcelDownloadButton data={getFormatExcelData(countTimeline2, date2)}/>
+              :null
+            }
           </div>
         </div>
           
