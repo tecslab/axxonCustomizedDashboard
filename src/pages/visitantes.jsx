@@ -113,6 +113,7 @@ export default function Visitantes(props) {
         let peopleOut = dataToStdFormat(data.events)
         let _countTimeLine = mergeInTimeLine(peopleIn, peopleOut)
         let visitorsTimeLine = getVisitors(_countTimeLine)
+        setCurrentVisitors(visitorsTimeLine[visitorsTimeLine.length-1]["visitors"])
         setVisitorsEvents1({peopleIn, peopleOut})
         setCountTimeLine1(_countTimeLine)
         setDataLineChartVisitors(estructurarData(visitorsTimeLine, 1))
@@ -266,14 +267,9 @@ export default function Visitantes(props) {
         stringDay = ""
     }
 
-    console.log("here")
-    console.log(timeIntervals)
     for (let interval of timeIntervals){
-      console.log("here2")
       // filter all register in each interval
       let registrosIntervalo = timeLine.filter(registro => registro["timestamp"].getHours().toString().padStart(2, '0') === interval.substring(0, 2))
-      console.log("RegistrosIntervalo:")
-      console.log(registrosIntervalo)
       let registrosIn = registrosIntervalo.filter(registro=> registro.type === "PeopleIn")
       let registrosOut = registrosIntervalo.filter(registro=> registro.type === "PeopleOut" )
 
