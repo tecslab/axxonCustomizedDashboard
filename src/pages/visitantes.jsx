@@ -273,10 +273,10 @@ export default function Visitantes(props) {
       let registrosIn = registrosIntervalo.filter(registro=>{ registro.type === "PeopleIn"})
       let registrosOut = registrosIntervalo.filter(registro=>{ registro.type === "PeopleOut"})
 
-      let countIn = registrosIn.length
-      let countOut = registrosOut.length
+      let countIn = registrosIn.length.toString()
+      let countOut = registrosOut.length.toString()
 
-      let rowData = ["", "Colineal", countIn, countOut, day, month, year, dayOfWeek, interval, "", interval.substring(0, 2), stringDay, `${year}-${month}-${day}`]
+      let rowData = ["192.168.71.14", "Colineal", countIn, countOut, day, month, year, dayOfWeek, interval, "", interval.substring(0, 2), stringDay, `${year}-${month}-${day}`]
       excelData.push(rowData)
     }
     return excelData
@@ -378,6 +378,7 @@ export default function Visitantes(props) {
             <br/>
             <span>Eventos Out: </span>
             <span>{visitorsEvents1.peopleOut.length}</span>
+            <br/>
             {countTimeline1.length>0?
               <ExcelDownloadButton data={getFormatExcelData(countTimeline1, date1)}/>
               :null
@@ -396,6 +397,7 @@ export default function Visitantes(props) {
             <br/>
             <span>Eventos Out: </span>
             <span>{visitorsEvents2.peopleOut.length}</span>
+            <br/>
             {countTimeline2.length>0?
               <ExcelDownloadButton data={getFormatExcelData(countTimeline2, date2)}/>
               :null

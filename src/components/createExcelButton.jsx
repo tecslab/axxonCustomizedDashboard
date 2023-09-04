@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from 'primereact/button';
 import * as XLSX from 'xlsx';
 
 const ExcelDownloadButton = (props) => {
@@ -9,7 +10,7 @@ const ExcelDownloadButton = (props) => {
       ['Jane', 30],
       // ... add more data
     ]; */
-
+    console.log(props.data)
     const workSheet = XLSX.utils.aoa_to_sheet(props.data);
     const workBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workBook, workSheet, 'Sheet1');
@@ -18,7 +19,7 @@ const ExcelDownloadButton = (props) => {
   };
 
   return (
-    <button onClick={generateExcel}>Exportar Datos</button>
+    <Button onClick={generateExcel} label="Exportar Datos" severity="info"/>
   );
 };
 
