@@ -269,12 +269,13 @@ export default function Visitantes(props) {
     for (let interval of timeIntervals){
       // filter all register in each interval
       let registrosIntervalo = timeLine.filter(registro => registro["timestamp"].getHours().toString().padStart(2, '0') === interval.substring(0, 2))
+      console.log("RegistrosIntervalo:")
+      console.log(registrosIntervalo)
+      let registrosIn = registrosIntervalo.filter(registro=> registro.type === "PeopleIn")
+      let registrosOut = registrosIntervalo.filter(registro=> registro.type === "PeopleOut" )
 
-      let registrosIn = registrosIntervalo.filter(registro=>{ registro.type === "PeopleIn"})
-      let registrosOut = registrosIntervalo.filter(registro=>{ registro.type === "PeopleOut"})
-
-      let countIn = registrosIn.length.toString()
-      let countOut = registrosOut.length.toString()
+      let countIn = registrosIn.length
+      let countOut = registrosOut.length
 
       let rowData = ["192.168.71.14", "Colineal", countIn, countOut, day, month, year, dayOfWeek, interval, "", interval.substring(0, 2), stringDay, `${year}-${month}-${day}`]
       excelData.push(rowData)

@@ -10,7 +10,7 @@ const ExcelDownloadButton = (props) => {
       ['Jane', 30],
       // ... add more data
     ]; */
-    console.log(props.data)
+    
     const workSheet = XLSX.utils.aoa_to_sheet(props.data);
     const workBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workBook, workSheet, 'Sheet1');
