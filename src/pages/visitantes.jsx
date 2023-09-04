@@ -266,7 +266,10 @@ export default function Visitantes(props) {
         stringDay = ""
     }
 
+    console.log("here")
+    console.log(timeIntervals)
     for (let interval of timeIntervals){
+      console.log("here2")
       // filter all register in each interval
       let registrosIntervalo = timeLine.filter(registro => registro["timestamp"].getHours().toString().padStart(2, '0') === interval.substring(0, 2))
       console.log("RegistrosIntervalo:")
