@@ -342,28 +342,30 @@ export default function Visitantes(props) {
       <div className="row mt-3">
         <div className="col-12">
           <div className="card flex justify-content-center">
-            <h1>Visitantes máximos por hora</h1>
+            <h1 className='mt-3 mb-4'>Visitantes máximos por hora</h1>
           </div>
         </div>
         <div className="col-12">
           <div className="card flex justify-content-center">
-            <h2>Comparar días</h2>
+            <h2 className='mt-0 mb-2'>Comparar días</h2>
           </div>
         </div>
         <div className="col-6">
           <div className="card flex justify-content-center">
+            <span>Día 1: </span>
             <Calendar value={date1} onChange={(e) => onChangeDate1(e)} showIcon />
           </div>
         </div>
-        <div className="col-6">
+        <div className="col-6 mb-1">
           <div className="card flex justify-content-center">
+            <span>Día 2: </span>
             <Calendar value={date2} onChange={(e) => onChangeDate2(e)} showIcon />
           </div>
         </div>
 
         <div className="col-12">
-          <div className="card">
-            <Chart type="line" data={dataLineChartVisitors} options={options} />
+          <div className="card chart p-4">
+            <Chart type="line" data={dataLineChartVisitors} options={options} style={{maxHeight:"300px"}}/>
           </div>
         </div>
 
@@ -374,48 +376,43 @@ export default function Visitantes(props) {
 
         <div className="col-6">
           <div className="card flex justify-content-center">
-            <h2>{date1?getDateString(date1):"Día 1"}</h2>
+            <h3>{date1?getDateString(date1):"Día 1"}</h3>
             {/* <span>Cantidad de rostros: </span>
             <span>{day1FacesCount}</span> */}
-            <br/>
             <span>Eventos In: </span>
             <span>{visitorsEvents1.peopleIn.length}</span>
             <br/>
             <span>Eventos Out: </span>
             <span>{visitorsEvents1.peopleOut.length}</span>
-            <br/>
-            {countTimeline1.length>0?
-              <ExcelDownloadButton data={getFormatExcelData(countTimeline1, date1)}/>
-              :null
-            }
           </div>
         </div>
 
         <div className="col-6">
           <div className="card flex justify-content-center">
-            <h2>{date2?getDateString(date2):"Día 2"}</h2>
+            <h3>{date2?getDateString(date2):"Día 2"}</h3>
             {/* <span>Cantidad de rostros: </span>
             <span>{day2FacesCount}</span> */}
-            <br/>
             <span>Eventos In: </span>
             <span>{visitorsEvents2.peopleIn.length}</span>
             <br/>
             <span>Eventos Out: </span>
             <span>{visitorsEvents2.peopleOut.length}</span>
-            <br/>
-            {countTimeline2.length>0?
-              <ExcelDownloadButton data={getFormatExcelData(countTimeline2, date2)}/>
-              :null
-            }
           </div>
         </div>
 
-        <div className="col-12">
+        <div className="col-12 my-2">
           <div className="card flex justify-content-center">
-            <h2>Exportar a Excel</h2>
+            <h2 className='mb-2'>Exportar a Excel</h2>
+            <span>Seleccionar rango de fechas</span>
+            <br/>
+            <span>Desde: </span>
+            <Calendar value={date1} onChange={(e) => onChangeDate1(e)} showIcon />
+            <span className='ms-4'>Hasta: </span>
+            <Calendar value={date1} onChange={(e) => onChangeDate1(e)} showIcon className="my-2" />
+            <br/>
+            <ExcelDownloadButton data={getFormatExcelData(countTimeline1, date1)} disabled={true}/>
           </div>
         </div>
-
         
           
       </div>
