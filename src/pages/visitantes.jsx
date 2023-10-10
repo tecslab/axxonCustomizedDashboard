@@ -345,6 +345,11 @@ export default function Visitantes(props) {
             <h1>Visitantes máximos por hora</h1>
           </div>
         </div>
+        <div className="col-12">
+          <div className="card flex justify-content-center">
+            <h2>Comparar días</h2>
+          </div>
+        </div>
         <div className="col-6">
           <div className="card flex justify-content-center">
             <Calendar value={date1} onChange={(e) => onChangeDate1(e)} showIcon />
@@ -404,6 +409,14 @@ export default function Visitantes(props) {
             }
           </div>
         </div>
+
+        <div className="col-12">
+          <div className="card flex justify-content-center">
+            <h2>Exportar a Excel</h2>
+          </div>
+        </div>
+
+        
           
       </div>
     </>

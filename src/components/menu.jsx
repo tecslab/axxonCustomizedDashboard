@@ -19,7 +19,7 @@ function Menu() {
         }
       ]
     },
-    {
+    /* {
       label:'Reportes Excel',
       icon:'pi pi-fw pi-file-export',
       items:[
@@ -31,7 +31,7 @@ function Menu() {
           }
         }
       ]
-    }
+    } */
 
   ];
 
