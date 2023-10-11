@@ -105,6 +105,22 @@ export default function Visitantes(props) {
     })
   }
 
+  const onChangeDate3 = (e) =>{
+    setDate3(e.value)
+    const intervalDate = getIntervalDate(e.value)
+    const initDate = intervalDate.formattedInitDate
+    const finishDate = intervalDate.formattedFinishDate
+
+    getVisitorsData({ initDate, finishDate })
+    .then(result => {
+      setVisitorsEvents1({peopleIn: result.peopleIn, peopleOut: result.peopleOut})
+      setCountTimeLine1(result._countTimeLine)
+    })
+    .catch(error => {
+      console.error('Error in getVisitorsData:', error);
+    });
+  }
+
   useEffect(() => {
     let today = new Date()
     setDate1(today)
