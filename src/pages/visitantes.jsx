@@ -26,7 +26,7 @@ export default function Visitantes(props) {
   });
 
   const getIntervalDate = (date) =>{
-    // date processing adapt to the server format and utc
+    // returns the day interval between the proceesing will be done
     let initDate = new Date(date)
     initDate.setHours(detectionStartTime.substring(0, 2))
     initDate.setMinutes(detectionStartTime.substring(2, 4))
@@ -39,6 +39,24 @@ export default function Visitantes(props) {
 
     return {formattedInitDate, formattedFinishDate}
   }
+
+  const getVisitorsData = ({initDate, finishDate}) => {
+    let peopleIn, peopleOut, _countTimeLine, visitorsTimeLine
+
+    restAPI.getPeopleIn({initDate, finishDate})
+    .then(data => {
+      peopleIn = dataToStdFormat(data.events)
+      restAPI.getPeopleOut({initDate, finishDate})
+        .then(data => {
+        peopleOut = dataToStdFormat(data.events)
+        _countTimeLine = mergeInTimeLine(peopleIn, peopleOut)
+        visitorsTimeLine = getVisitors(_countTimeLine)
+      })
+    })
+
+    return {peopleIn, peopleOut, _countTimeLine, visitorsTimeLine}
+  }
+
 
   const onChangeDate1 = (e) =>{
     setDate1(e.value)
@@ -184,6 +202,7 @@ export default function Visitantes(props) {
   }
 
   const estructurarData = (visitorsTimeLine, dateIndex) => {
+    // Returns data in Chart format
     // dateIndex gives information about what date source was changed
     // out: Max visitors registered in an interval. If there are no registers in some interval it keeps the last register.
     // [{interval: "06", visitors: 1}, {interval: "07", visitors: 3}, ... ]
@@ -234,6 +253,7 @@ export default function Visitantes(props) {
   }
 
   const getFormatExcelData = (timeLine, date) =>{
+    // Set data in format required by Colineal
     let excelData = [["DIRECCION_ip", "TIENDA", "ENTRADAS", "SALIDAS", "dia", "mes", "anio", "DIASEM", "hora", "SEMANA", "SOLOHORA", "DIA_SEMANA", "FECHAHORA"]]
     const year = date.getFullYear().toString();
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -268,7 +288,7 @@ export default function Visitantes(props) {
     }
 
     for (let interval of timeIntervals){
-      // filter all register in each interval
+      // filter all register in each hour interval
       let registrosIntervalo = timeLine.filter(registro => registro["timestamp"].getHours().toString().padStart(2, '0') === interval.substring(0, 2))
       let registrosIn = registrosIntervalo.filter(registro=> registro.type === "PeopleIn")
       let registrosOut = registrosIntervalo.filter(registro=> registro.type === "PeopleOut" )
