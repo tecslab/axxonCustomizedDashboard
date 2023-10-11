@@ -430,7 +430,8 @@ export default function Visitantes(props) {
             <span className='ms-4'>Hasta: </span>
             <Calendar value={date1} onChange={(e) => onChangeDate1(e)} showIcon className="my-2" />
             <br/>
-            <ExcelDownloadButton data={getFormatExcelData(countTimeline1, date1)} disabled={true}/>
+            {/* <ExcelDownloadButton data={getFormatExcelData(countTimeline1, date1)} disabled={true}/> */}
+            <ExcelDownloadButton disabled={true}/>
           </div>
         </div>
         
