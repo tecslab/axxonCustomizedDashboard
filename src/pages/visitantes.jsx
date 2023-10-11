@@ -13,6 +13,8 @@ export default function Visitantes(props) {
   const restAPI = new RestAPI();
   const [date1, setDate1] = useState(null);
   const [date2, setDate2] = useState(null);
+  const [date3, setDate3] = useState(null);
+  const [date4, setDate4] = useState(null);
   const [day1FacesCount, setDay1FacesCount] = useState(null)
   const [day2FacesCount, setDay2FacesCount] = useState(null)
   const [currentVisitors, setCurrentVisitors] = useState(0)
@@ -40,23 +42,20 @@ export default function Visitantes(props) {
     return {formattedInitDate, formattedFinishDate}
   }
 
-  const getVisitorsData = ({initDate, finishDate}) => {
-    let peopleIn, peopleOut, _countTimeLine, visitorsTimeLine
-
-    restAPI.getPeopleIn({initDate, finishDate})
-    .then(data => {
-      peopleIn = dataToStdFormat(data.events)
-      restAPI.getPeopleOut({initDate, finishDate})
-        .then(data => {
-        peopleOut = dataToStdFormat(data.events)
-        _countTimeLine = mergeInTimeLine(peopleIn, peopleOut)
-        visitorsTimeLine = getVisitors(_countTimeLine)
-      })
-    })
-
-    return {peopleIn, peopleOut, _countTimeLine, visitorsTimeLine}
+  const getVisitorsData = async ({initDate, finishDate}) => {
+    try{
+      const dataPeopleIn = await restAPI.getPeopleIn({initDate, finishDate})
+      const peopleIn = dataToStdFormat(dataPeopleIn.events);
+      const dataPeopleOut = await restAPI.getPeopleOut({initDate, finishDate})
+      const peopleOut = dataToStdFormat(dataPeopleOut.events);
+      const _countTimeLine = mergeInTimeLine(peopleIn, peopleOut)
+      const visitorsTimeLine = getVisitors(_countTimeLine)
+      return {peopleIn, peopleOut, _countTimeLine, visitorsTimeLine}
+    } catch (error){
+      console.error("Error capturando los datos:", error);
+      return {peopleIn:[], peopleOut:[], _countTimeLine:[], visitorsTimeLine:[]}
+    }
   }
-
 
   const onChangeDate1 = (e) =>{
     setDate1(e.value)
@@ -64,19 +63,15 @@ export default function Visitantes(props) {
     const initDate = intervalDate.formattedInitDate
     const finishDate = intervalDate.formattedFinishDate
 
-    restAPI.getPeopleIn({initDate, finishDate})
-    .then(data => {
-      let peopleIn = dataToStdFormat(data.events)
-      restAPI.getPeopleOut({initDate, finishDate})
-        .then(data => {
-        let peopleOut = dataToStdFormat(data.events)
-        let _countTimeLine = mergeInTimeLine(peopleIn, peopleOut)
-        let visitorsTimeLine = getVisitors(_countTimeLine)
-        setVisitorsEvents1({peopleIn, peopleOut})
-        setCountTimeLine1(_countTimeLine)
-        setDataLineChartVisitors(estructurarData(visitorsTimeLine, 1))
-      })
+    getVisitorsData({ initDate, finishDate })
+    .then(result => {
+      setVisitorsEvents1({peopleIn: result.peopleIn, peopleOut: result.peopleOut})
+      setCountTimeLine1(result._countTimeLine)
+      setDataLineChartVisitors(estructurarData(result.visitorsTimeLine, 1))
     })
+    .catch(error => {
+      console.error('Error in getVisitorsData:', error);
+    });
 
     restAPI.getFaces({initDate, finishDate})
     .then(data=>{
@@ -92,19 +87,15 @@ export default function Visitantes(props) {
     const initDate = intervalDate.formattedInitDate
     const finishDate = intervalDate.formattedFinishDate
 
-    restAPI.getPeopleIn({initDate, finishDate})
-    .then(data => {
-      let peopleIn = dataToStdFormat(data.events)
-      restAPI.getPeopleOut({initDate, finishDate})
-        .then(data => {
-        let peopleOut = dataToStdFormat(data.events)
-        let _countTimeLine = mergeInTimeLine(peopleIn, peopleOut)
-        let visitorsTimeLine = getVisitors(_countTimeLine)
-        setVisitorsEvents2({peopleIn, peopleOut})
-        setCountTimeLine2(_countTimeLine)
-        setDataLineChartVisitors(estructurarData(visitorsTimeLine, 2))
-      })
+    getVisitorsData({ initDate, finishDate })
+    .then(result => {
+      setVisitorsEvents2({peopleIn: result.peopleIn, peopleOut: result.peopleOut})
+      setCountTimeLine2(result._countTimeLine)
+      setDataLineChartVisitors(estructurarData(result.visitorsTimeLine, 2))
     })
+    .catch(error => {
+      console.error('Error in getVisitorsData:', error);
+    });
 
     restAPI.getFaces({initDate, finishDate})
     .then(data=>{
