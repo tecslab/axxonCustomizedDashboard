@@ -361,7 +361,9 @@ export default function Visitantes(props) {
       const initDate = intervalDate.formattedInitDate
       const finishDate = intervalDate.formattedFinishDate
       
+      console.log("trying")
       let result = await getVisitorsData({ initDate, finishDate })
+      console.log("trying2")
       let dayData = getFormatExcelData(result.visitorsTimeLine, dateInf)
       excelData = [...excelData, ...dayData]
       dateInf.setHours(24) // to forward to the next day
