@@ -46,6 +46,10 @@ export default function Visitantes(props) {
   }
 
   const getVisitorsData = async ({ initDate, finishDate }) => {
+    console.log("inside0")
+    const dataPeopleIn = await restAPI.getPeopleIn({ initDate, finishDate })
+    console.log("inside1")
+
     try {
       console.log("inside")
       const dataPeopleIn = await restAPI.getPeopleIn({ initDate, finishDate })
@@ -59,7 +63,7 @@ export default function Visitantes(props) {
       const visitorsTimeLine = getVisitors(_countTimeLine)
       return { peopleIn, peopleOut, _countTimeLine, visitorsTimeLine }
     } catch (error) {
-      console.error("Error capturando los datos:", error);
+      console.log("Error capturando los datos:", error);
       return { peopleIn: [], peopleOut: [], _countTimeLine: [], visitorsTimeLine: [] }
     }
   }
