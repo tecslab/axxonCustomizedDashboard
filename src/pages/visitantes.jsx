@@ -47,25 +47,11 @@ export default function Visitantes(props) {
 
   const getVisitorsData = async ({ initDate, finishDate }) => {
     console.log("inside0")
+    console.log(initDate)
+    console.log(finishDate)
     const dataPeopleIn = await restAPI.getPeopleIn({ initDate, finishDate })
     console.log("inside1")
 
-    try {
-      console.log("inside")
-      const dataPeopleIn = await restAPI.getPeopleIn({ initDate, finishDate })
-      console.log("inside2")
-      const peopleIn = dataToStdFormat(dataPeopleIn.events);
-      console.log("inside3")
-      const dataPeopleOut = await restAPI.getPeopleOut({ initDate, finishDate })
-      console.log("inside4")
-      const peopleOut = dataToStdFormat(dataPeopleOut.events);
-      const _countTimeLine = mergeInTimeLine(peopleIn, peopleOut)
-      const visitorsTimeLine = getVisitors(_countTimeLine)
-      return { peopleIn, peopleOut, _countTimeLine, visitorsTimeLine }
-    } catch (error) {
-      console.log("Error capturando los datos:", error);
-      return { peopleIn: [], peopleOut: [], _countTimeLine: [], visitorsTimeLine: [] }
-    }
   }
 
   const onChangeDate1 = (e) => {
