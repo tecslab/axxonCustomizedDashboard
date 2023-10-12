@@ -1,209 +1,187 @@
 import React, { useState, useEffect } from 'react'
 import { Chart } from 'primereact/chart';
 import { Calendar } from 'primereact/calendar';
-import { genDataBarStacked, genDataLine, dateInFormat,
-  UTCTransform, parseDate } from "../parametrosGlobales"
-  let {detectionStartTime, detectionFinishTime} = parametrosGlobales
+import {
+  genDataBarStacked, genDataLine, dateInFormat,
+  UTCTransform, parseDate
+} from "../parametrosGlobales"
+let { detectionStartTime, detectionFinishTime } = parametrosGlobales
 import parametrosGlobales from "../parametrosGlobales"
 import { RestAPI } from "../utilities/restAPI"
 import ExcelDownloadButton from '../components/createExcelButton';
 const timeIntervals = ['09H00', '10H00', '11H00', '12H00', '13H00', '14H00', '15H00', '16H00', '17H00', '18H00', '19H00', '20H00', '21H00']
-  
+
 export default function Visitantes(props) {
   const restAPI = new RestAPI();
-  const [date1, setDate1] = useState(null);
+  const [date1, setDate1] = useState(new Date());
   const [date2, setDate2] = useState(null);
-  const [date3, setDate3] = useState(null);
-  const [date4, setDate4] = useState(null);
+  const [date3, setDate3] = useState(new Date());
+  const [date4, setDate4] = useState(new Date());
   const [day1FacesCount, setDay1FacesCount] = useState(null)
   const [day2FacesCount, setDay2FacesCount] = useState(null)
   const [currentVisitors, setCurrentVisitors] = useState(0)
   const [countTimeline1, setCountTimeLine1] = useState([])
   const [countTimeline2, setCountTimeLine2] = useState([])
-  const [visitorsEvents1, setVisitorsEvents1] = useState({peopleIn:[], peopleOut:[]})
-  const [visitorsEvents2, setVisitorsEvents2] = useState({peopleIn:[], peopleOut:[]})
+  const [visitorsEvents1, setVisitorsEvents1] = useState({ peopleIn: [], peopleOut: [] })
+  const [visitorsEvents2, setVisitorsEvents2] = useState({ peopleIn: [], peopleOut: [] })
   const [dataLineChartVisitors, setDataLineChartVisitors] = useState({
     labels: ["09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21"],
     datasets: []
   });
 
-  const getIntervalDate = (date) =>{
+  const getIntervalDate = (date) => {
     // returns the day interval between the proceesing will be done
+    // receives date On user UTC and transform it to UTC0
     let initDate = new Date(date)
     initDate.setHours(detectionStartTime.substring(0, 2))
     initDate.setMinutes(detectionStartTime.substring(2, 4))
-    let formattedInitDate = dateInFormat(UTCTransform({type: "toUTC0", date: initDate}))
+    let formattedInitDate = dateInFormat(UTCTransform({ type: "toUTC0", date: initDate }))
 
     let finishDate = new Date(date)
     finishDate.setHours(detectionFinishTime.substring(0, 2))
     finishDate.setMinutes(detectionFinishTime.substring(2, 4))
-    let formattedFinishDate = dateInFormat(UTCTransform({type: "toUTC0", date: finishDate}))
+    let formattedFinishDate = dateInFormat(UTCTransform({ type: "toUTC0", date: finishDate }))
 
-    return {formattedInitDate, formattedFinishDate}
+    return { formattedInitDate, formattedFinishDate }
   }
 
-  const getVisitorsData = async ({initDate, finishDate}) => {
-    try{
-      const dataPeopleIn = await restAPI.getPeopleIn({initDate, finishDate})
+  const getVisitorsData = async ({ initDate, finishDate }) => {
+    try {
+      const dataPeopleIn = await restAPI.getPeopleIn({ initDate, finishDate })
       const peopleIn = dataToStdFormat(dataPeopleIn.events);
-      const dataPeopleOut = await restAPI.getPeopleOut({initDate, finishDate})
+      const dataPeopleOut = await restAPI.getPeopleOut({ initDate, finishDate })
       const peopleOut = dataToStdFormat(dataPeopleOut.events);
       const _countTimeLine = mergeInTimeLine(peopleIn, peopleOut)
       const visitorsTimeLine = getVisitors(_countTimeLine)
-      return {peopleIn, peopleOut, _countTimeLine, visitorsTimeLine}
-    } catch (error){
+      return { peopleIn, peopleOut, _countTimeLine, visitorsTimeLine }
+    } catch (error) {
       console.error("Error capturando los datos:", error);
-      return {peopleIn:[], peopleOut:[], _countTimeLine:[], visitorsTimeLine:[]}
+      return { peopleIn: [], peopleOut: [], _countTimeLine: [], visitorsTimeLine: [] }
     }
   }
 
-  const onChangeDate1 = (e) =>{
+  const onChangeDate1 = (e) => {
     setDate1(e.value)
     const intervalDate = getIntervalDate(e.value)
     const initDate = intervalDate.formattedInitDate
     const finishDate = intervalDate.formattedFinishDate
 
     getVisitorsData({ initDate, finishDate })
-    .then(result => {
-      setVisitorsEvents1({peopleIn: result.peopleIn, peopleOut: result.peopleOut})
-      setCountTimeLine1(result._countTimeLine)
-      setDataLineChartVisitors(estructurarData(result.visitorsTimeLine, 1))
-    })
-    .catch(error => {
-      console.error('Error in getVisitorsData:', error);
-    });
+      .then(result => {
+        setVisitorsEvents1({ peopleIn: result.peopleIn, peopleOut: result.peopleOut })
+        setCountTimeLine1(result._countTimeLine)
+        setDataLineChartVisitors(estructurarData(result.visitorsTimeLine, 1))
+      })
+      .catch(error => {
+        console.error('Error in getVisitorsData:', error);
+      });
 
-    restAPI.getFaces({initDate, finishDate})
-    .then(data=>{
-      let facesEvents = dataToStdFormat(data.events)
-      let facesMap = getFacesCount(facesEvents)      
-      setDay1FacesCount(facesMap.size)
-    })
+    restAPI.getFaces({ initDate, finishDate })
+      .then(data => {
+        let facesEvents = dataToStdFormat(data.events)
+        let facesMap = getFacesCount(facesEvents)
+        setDay1FacesCount(facesMap.size)
+      })
   }
 
-  const onChangeDate2 = (e) =>{
+  const onChangeDate2 = (e) => {
     setDate2(e.value)
     const intervalDate = getIntervalDate(e.value)
     const initDate = intervalDate.formattedInitDate
     const finishDate = intervalDate.formattedFinishDate
 
     getVisitorsData({ initDate, finishDate })
-    .then(result => {
-      setVisitorsEvents2({peopleIn: result.peopleIn, peopleOut: result.peopleOut})
-      setCountTimeLine2(result._countTimeLine)
-      setDataLineChartVisitors(estructurarData(result.visitorsTimeLine, 2))
-    })
-    .catch(error => {
-      console.error('Error in getVisitorsData:', error);
-    });
+      .then(result => {
+        setVisitorsEvents2({ peopleIn: result.peopleIn, peopleOut: result.peopleOut })
+        setCountTimeLine2(result._countTimeLine)
+        setDataLineChartVisitors(estructurarData(result.visitorsTimeLine, 2))
+      })
+      .catch(error => {
+        console.error('Error in getVisitorsData:', error);
+      });
 
-    restAPI.getFaces({initDate, finishDate})
-    .then(data=>{
-      let facesEvents = dataToStdFormat(data.events)
-      let facesMap = getFacesCount(facesEvents)      
-      setDay2FacesCount(facesMap.size)
-    })
+    restAPI.getFaces({ initDate, finishDate })
+      .then(data => {
+        let facesEvents = dataToStdFormat(data.events)
+        let facesMap = getFacesCount(facesEvents)
+        setDay2FacesCount(facesMap.size)
+      })
   }
 
-  const onChangeDate3 = (e) =>{
-    setDate3(e.value)
-    const intervalDate = getIntervalDate(e.value)
+  useEffect(() => {
+    const intervalDate = getIntervalDate(date1)
     const initDate = intervalDate.formattedInitDate
     const finishDate = intervalDate.formattedFinishDate
 
     getVisitorsData({ initDate, finishDate })
-    .then(result => {
-      setVisitorsEvents1({peopleIn: result.peopleIn, peopleOut: result.peopleOut})
-      setCountTimeLine1(result._countTimeLine)
-    })
-    .catch(error => {
-      console.error('Error in getVisitorsData:', error);
-    });
-  }
-
-  useEffect(() => {
-    let today = new Date()
-    setDate1(today)
-    const intervalDate = getIntervalDate(today)
-    const initDate = intervalDate.formattedInitDate
-    const finishDate = intervalDate.formattedFinishDate
-
-    restAPI.getPeopleIn({initDate, finishDate})
-    .then(data => {
-      console.log(data)
-      let peopleIn = dataToStdFormat(data.events)
-      restAPI.getPeopleOut({initDate, finishDate})
-        .then(data => {
-        console.log(data)
-        let peopleOut = dataToStdFormat(data.events)
-        let _countTimeLine = mergeInTimeLine(peopleIn, peopleOut)
-        let visitorsTimeLine = getVisitors(_countTimeLine)
-        setCurrentVisitors(visitorsTimeLine[visitorsTimeLine.length-1]["visitors"])
-        setVisitorsEvents1({peopleIn, peopleOut})
-        setCountTimeLine1(_countTimeLine)
-        setDataLineChartVisitors(estructurarData(visitorsTimeLine, 1))
+      .then(result => {
+        setVisitorsEvents1({ peopleIn: result.peopleIn, peopleOut: result.peopleOut })
+        setCountTimeLine1(result._countTimeLine)
+        setDataLineChartVisitors(estructurarData(result.visitorsTimeLine, 1))
       })
-    })
+      .catch(error => {
+        console.error('Error in getVisitorsData:', error);
+      });
 
-    restAPI.getFaces({initDate, finishDate})
-    .then(data=>{
-      console.log(data)
-      let facesEvents = dataToStdFormat(data.events)
-      let facesMap = getFacesCount(facesEvents)      
-      setDay1FacesCount(facesMap.size)
-    })
-  },[])
+    restAPI.getFaces({ initDate, finishDate })
+      .then(data => {
+        console.log(data)
+        let facesEvents = dataToStdFormat(data.events)
+        let facesMap = getFacesCount(facesEvents)
+        setDay1FacesCount(facesMap.size)
+      })
+  }, [])
 
-  const mergeInTimeLine = (eventsArray1, eventsArray2) =>{
+  const mergeInTimeLine = (eventsArray1, eventsArray2) => {
     // merge 2 array of events in one ordered Time line array
     let eventsTimeLine = []
     let indexEvents1 = 0
     let indexEvents2 = 0
-    let condition = (indexEvents1<eventsArray1.length) && (indexEvents2<eventsArray2.length)
-    if (condition){
-      while (condition){
+    let condition = (indexEvents1 < eventsArray1.length) && (indexEvents2 < eventsArray2.length)
+    if (condition) {
+      while (condition) {
         let nextEvent1 = eventsArray1[indexEvents1]
         let nextEvent2 = eventsArray2[indexEvents2]
         let inLower = nextEvent1.timestamp < nextEvent2.timestamp ? true : false;
 
-        if (inLower){
+        if (inLower) {
           eventsTimeLine.push(nextEvent1)
-          indexEvents1 ++
-          if (indexEvents1>=eventsArray1.length){
+          indexEvents1++
+          if (indexEvents1 >= eventsArray1.length) {
             condition = false
             eventsTimeLine.push(...eventsArray2.slice(indexEvents2))
           }
-        }else{
+        } else {
           eventsTimeLine.push(nextEvent2)
-          indexEvents2 ++
-          if (indexEvents2>=eventsArray2.length){
+          indexEvents2++
+          if (indexEvents2 >= eventsArray2.length) {
             condition = false
             eventsTimeLine.push(...eventsArray1.slice(indexEvents1))
           }
         }
       }
-    }else{
+    } else {
       eventsTimeLine = [...eventsArray1, ...eventsArray2]
     }
     return eventsTimeLine
   }
 
-  const dataToStdFormat = (eventsArray) =>{
+  const dataToStdFormat = (eventsArray) => {
     // transform the events array data to standar format (date)
-    eventsArray.forEach(_event=>{
-      _event.timestamp = UTCTransform({type: "toCurrentUTC", date: parseDate(_event.timestamp)})      
+    eventsArray.forEach(_event => {
+      _event.timestamp = UTCTransform({ type: "toCurrentUTC", date: parseDate(_event.timestamp) })
     })
     return eventsArray
   }
 
   const getVisitors = (eventsTimeline) => {
     //get the visitors timeline
-    let visitorsTimeLine = [{hora: detectionStartTime.substring(0, 2), visitors: 0}]
-    for (let i=0; i<eventsTimeline.length; i++){
+    let visitorsTimeLine = [{ hora: detectionStartTime.substring(0, 2), visitors: 0 }]
+    for (let i = 0; i < eventsTimeline.length; i++) {
       let hora = eventsTimeline[i]["timestamp"].getHours().toString().padStart(2, '0'); // para tomar solo la hora
-      let currentVisitorsCount = visitorsTimeLine[visitorsTimeLine.length-1]["visitors"] // última cuenta de visitantes
-      eventsTimeline[i].type==="PeopleIn"?currentVisitorsCount++:currentVisitorsCount--
-      visitorsTimeLine.push({hora: hora, visitors: currentVisitorsCount})
+      let currentVisitorsCount = visitorsTimeLine[visitorsTimeLine.length - 1]["visitors"] // última cuenta de visitantes
+      eventsTimeline[i].type === "PeopleIn" ? currentVisitorsCount++ : currentVisitorsCount--
+      visitorsTimeLine.push({ hora: hora, visitors: currentVisitorsCount })
     }
     return visitorsTimeLine
   }
@@ -216,19 +194,19 @@ export default function Visitantes(props) {
     // {label1: valueLabel1, label2: valueLabel2 ....}
     let lastVisitors = visitorsTimeLine[0].visitors // it is needed to give the count of visitors when there are not registers from this interval
     let intervalVisitorsData = []
-    for (let interval of timeIntervals){
+    for (let interval of timeIntervals) {
       // filter all register in each interval
       //let maxVisitorsObject = null;
       let maxVisitorsValue = 0
       let registrosIntervalo = visitorsTimeLine.filter(registro => registro.hora === interval.substring(0, 2))
-      
+
       if (registrosIntervalo.length === 0) {
         //maxVisitorsObject = { interval: interval, visitors: lastVisitors }
         maxVisitorsValue = lastVisitors
-      }else{
-        lastVisitors = registrosIntervalo[registrosIntervalo.length-1].visitors
+      } else {
+        lastVisitors = registrosIntervalo[registrosIntervalo.length - 1].visitors
         let maxVisitors = -Infinity;
-        
+
         for (const registro of registrosIntervalo) {
           const visitors = registro.visitors;
           if (visitors > maxVisitors) {
@@ -243,15 +221,15 @@ export default function Visitantes(props) {
     }
 
     let { datasets } = dataLineChartVisitors
-    datasets[dateIndex-1]= {
+    datasets[dateIndex - 1] = {
       label: 'Día ' + dateIndex.toString(),
       data: intervalVisitorsData,
       fill: false,
-      borderColor: dateIndex-1===0?"blue":"red",
+      borderColor: dateIndex - 1 === 0 ? "blue" : "red",
       tension: 0.4
     }
 
-    const data ={
+    const data = {
       labels: timeIntervals,
       datasets: datasets
     }
@@ -259,16 +237,17 @@ export default function Visitantes(props) {
     return data
   }
 
-  const getFormatExcelData = (timeLine, date) =>{
+  const getFormatExcelData = (timeLine, date) => {
     // Set data in format required by Colineal
-    let excelData = [["DIRECCION_ip", "TIENDA", "ENTRADAS", "SALIDAS", "dia", "mes", "anio", "DIASEM", "hora", "SEMANA", "SOLOHORA", "DIA_SEMANA", "FECHAHORA"]]
+    //let excelData = [["DIRECCION_ip", "TIENDA", "ENTRADAS", "SALIDAS", "dia", "mes", "anio", "DIASEM", "hora", "SEMANA", "SOLOHORA", "DIA_SEMANA", "FECHAHORA"]]
+    let excelData = []
     const year = date.getFullYear().toString();
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const day = date.getDate().toString().padStart(2, '0');
     const dayOfWeek = date.getDay() + 1
 
     let stringDay;
-    switch (dayOfWeek){
+    switch (dayOfWeek) {
       case 1:
         stringDay = "Domingo"
         break;
@@ -294,11 +273,11 @@ export default function Visitantes(props) {
         stringDay = ""
     }
 
-    for (let interval of timeIntervals){
+    for (let interval of timeIntervals) {
       // filter all register in each hour interval
       let registrosIntervalo = timeLine.filter(registro => registro["timestamp"].getHours().toString().padStart(2, '0') === interval.substring(0, 2))
-      let registrosIn = registrosIntervalo.filter(registro=> registro.type === "PeopleIn")
-      let registrosOut = registrosIntervalo.filter(registro=> registro.type === "PeopleOut" )
+      let registrosIn = registrosIntervalo.filter(registro => registro.type === "PeopleIn")
+      let registrosOut = registrosIntervalo.filter(registro => registro.type === "PeopleOut")
 
       let countIn = registrosIn.length
       let countOut = registrosOut.length
@@ -339,31 +318,58 @@ export default function Visitantes(props) {
     }
   };
 
-  const getFacesCount = (facesEvents) =>{
+  const getFacesCount = (facesEvents) => {
     let facesMap = new Map()
-    facesEvents.forEach(faceEvent =>{
+    facesEvents.forEach(faceEvent => {
       let faceId = faceEvent.rectangles[0]["index"]
       let existingFace = facesMap.get(faceId)
-      if (existingFace){
+      if (existingFace) {
         let newCount = existingFace.seenCounter++
-        facesMap.set(faceId, {seenCounter: newCount})
-      }else{
-        let faceObj = {seenCounter: 0}
+        facesMap.set(faceId, { seenCounter: newCount })
+      } else {
+        let faceObj = { seenCounter: 0 }
         facesMap.set(faceId, faceObj)
       }
     })
     return (facesMap)
   }
 
-  const getDateString = (date) =>{
+  const getDateString = (date) => {
     const year = date.getFullYear().toString();
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const day = date.getDate().toString().padStart(2, '0');
-
     const dateString = `${day}/${month}/${year}`;
     return dateString;
   }
-  
+
+  const isDisabled = () => {
+    let dateInf = new Date(date3)
+    let dateSup = new Date(date4)
+    dateInf.setHours(0, 0, 0, 0) // set to the beginning of the day
+    dateSup.setHours(0, 0, 0, 0)
+    return dateSup >= dateInf ? false : true
+  }
+
+  const getAsyncExcelData = async () =>{
+    let dateInf = new Date(date3)
+    let dateSup = new Date(date4)
+    dateInf.setHours(0, 0, 0, 0) // set to the beginning of the day
+    dateSup.setHours(0, 0, 0, 0)
+    let excelData = []
+    while (dateInf <= dateSup) {
+      const intervalDate = getIntervalDate(dateInf)
+      const initDate = intervalDate.formattedInitDate
+      const finishDate = intervalDate.formattedFinishDate
+      
+      let result = await getVisitorsData({ initDate, finishDate })
+      let dayData = getFormatExcelData(result.visitorsTimeLine, dateInf)
+      excelData = [...excelData, ...dayData]
+      dateInf.setHours(24) // to forward to the next day
+    }
+    excelData = [["DIRECCION_ip", "TIENDA", "ENTRADAS", "SALIDAS", "dia", "mes", "anio", "DIASEM", "hora", "SEMANA", "SOLOHORA", "DIA_SEMANA", "FECHAHORA"], ...excelData]
+    return excelData
+  }
+
   return (
     <>
       <div className="row mt-3">
@@ -392,7 +398,7 @@ export default function Visitantes(props) {
 
         <div className="col-12">
           <div className="card chart p-4">
-            <Chart type="line" data={dataLineChartVisitors} options={options} style={{maxHeight:"300px"}}/>
+            <Chart type="line" data={dataLineChartVisitors} options={options} style={{ maxHeight: "300px" }} />
           </div>
         </div>
 
@@ -403,12 +409,12 @@ export default function Visitantes(props) {
 
         <div className="col-6">
           <div className="card flex justify-content-center">
-            <h3>{date1?getDateString(date1):"Día 1"}</h3>
+            <h3>{date1 ? getDateString(date1) : "Día 1"}</h3>
             {/* <span>Cantidad de rostros: </span>
             <span>{day1FacesCount}</span> */}
             <span>Eventos In: </span>
             <span>{visitorsEvents1.peopleIn.length}</span>
-            <br/>
+            <br />
             <span>Eventos Out: </span>
             <span>{visitorsEvents1.peopleOut.length}</span>
           </div>
@@ -416,12 +422,12 @@ export default function Visitantes(props) {
 
         <div className="col-6">
           <div className="card flex justify-content-center">
-            <h3>{date2?getDateString(date2):"Día 2"}</h3>
+            <h3>{date2 ? getDateString(date2) : "Día 2"}</h3>
             {/* <span>Cantidad de rostros: </span>
             <span>{day2FacesCount}</span> */}
             <span>Eventos In: </span>
             <span>{visitorsEvents2.peopleIn.length}</span>
-            <br/>
+            <br />
             <span>Eventos Out: </span>
             <span>{visitorsEvents2.peopleOut.length}</span>
           </div>
@@ -431,18 +437,18 @@ export default function Visitantes(props) {
           <div className="card flex justify-content-center">
             <h2 className='mb-2'>Exportar a Excel</h2>
             <span>Seleccionar rango de fechas</span>
-            <br/>
+            <br />
             <span>Desde: </span>
-            <Calendar value={date1} onChange={(e) => onChangeDate1(e)} showIcon />
+            <Calendar value={date3} onChange={(e) => setDate3(e.value)} showIcon />
             <span className='ms-4'>Hasta: </span>
-            <Calendar value={date1} onChange={(e) => onChangeDate1(e)} showIcon className="my-2" />
-            <br/>
+            <Calendar value={date4} onChange={(e) => setDate4(e.value)} showIcon className="my-2" />
+            <br />
             {/* <ExcelDownloadButton data={getFormatExcelData(countTimeline1, date1)} disabled={true}/> */}
-            <ExcelDownloadButton disabled={true}/>
+            <ExcelDownloadButton getDataFuntion={getAsyncExcelData} disabled={isDisabled()} />
           </div>
         </div>
-        
-          
+
+
       </div>
     </>
   )

@@ -3,9 +3,9 @@ let {axxonOneServer, axxonOnePort, prefix, user,
    password, vEntranceCamera} =  parametrosGlobales
 
 export class RestAPI {
+  // Needs dates on UTC0
 
   getPeopleIn({initDate, finishDate}){
-
     let baseURI = "http://" + axxonOneServer + ":" + axxonOnePort + prefix
     let uriPeopleIn = baseURI + 'archive/events/detectors' + vEntranceCamera + initDate + "/" + finishDate + "?type=PeopleIn&limit=1200"
     console.log(uriPeopleIn)

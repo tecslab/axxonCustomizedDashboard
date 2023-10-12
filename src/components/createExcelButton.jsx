@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from 'primereact/button';
 import * as XLSX from 'xlsx';
 
-const ExcelDownloadButton = ({data, disabled}) => {
+const ExcelDownloadButton = ({data, disabled, getDataFuntion}) => {
   const generateExcel = () => {
     /* const data = [
       ['Name', 'Age'],
@@ -10,11 +10,12 @@ const ExcelDownloadButton = ({data, disabled}) => {
       ['Jane', 30],
       // ... add more data
     ]; */
+
+    let data = getDataFuntion()
     
     const workSheet = XLSX.utils.aoa_to_sheet(data);
     const workBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workBook, workSheet, 'Sheet1');
-
     XLSX.writeFile(workBook, 'data.xlsx');
   };
 
