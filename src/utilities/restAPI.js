@@ -17,7 +17,7 @@ export class RestAPI {
     console.log(rawData.status)
     const jsonData = await rawData.json();
     console.log(jsonData)
-    return rawData
+    return jsonData
     //return fetch("http://127.0.0.1:82/video-origins", {headers})
   }
 
