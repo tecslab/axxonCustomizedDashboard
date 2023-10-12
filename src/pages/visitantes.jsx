@@ -47,9 +47,13 @@ export default function Visitantes(props) {
 
   const getVisitorsData = async ({ initDate, finishDate }) => {
     try {
+      console.log("inside")
       const dataPeopleIn = await restAPI.getPeopleIn({ initDate, finishDate })
+      console.log("inside2")
       const peopleIn = dataToStdFormat(dataPeopleIn.events);
+      console.log("inside3")
       const dataPeopleOut = await restAPI.getPeopleOut({ initDate, finishDate })
+      console.log("inside4")
       const peopleOut = dataToStdFormat(dataPeopleOut.events);
       const _countTimeLine = mergeInTimeLine(peopleIn, peopleOut)
       const visitorsTimeLine = getVisitors(_countTimeLine)
