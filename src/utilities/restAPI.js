@@ -12,6 +12,7 @@ export class RestAPI {
     const headers = new Headers();
     headers.set('Authorization', 'Basic ' + btoa(user + ':' + password));
     console.log("here")
+    console.log(uriPeopleIn)
     return fetch(uriPeopleIn, {headers})
     //return fetch("http://127.0.0.1:82/video-origins", {headers})
       .then(res => res.json())
