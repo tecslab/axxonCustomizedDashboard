@@ -70,13 +70,19 @@ export default function Visitantes(props) {
     }
   }
 
-  const onChangeDate1 = (e) => {
+  const onChangeDate1 = async (e) => {
     setDate1(e.value)
     const intervalDate = getIntervalDate(e.value)
     const initDate = intervalDate.formattedInitDate
     const finishDate = intervalDate.formattedFinishDate
 
-    getVisitorsData({ initDate, finishDate })
+    let result = await getVisitorsData({ initDate, finishDate })
+    console.log("acgieve")
+    setVisitorsEvents1({ peopleIn: result.peopleIn, peopleOut: result.peopleOut })
+    setCountTimeLine1(result._countTimeLine)
+    setDataLineChartVisitors(estructurarData(result.visitorsTimeLine, 1))
+
+    /* getVisitorsData({ initDate, finishDate })
       .then(result => {
         setVisitorsEvents1({ peopleIn: result.peopleIn, peopleOut: result.peopleOut })
         setCountTimeLine1(result._countTimeLine)
@@ -84,14 +90,14 @@ export default function Visitantes(props) {
       })
       .catch(error => {
         console.error('Error in getVisitorsData:', error);
-      });
+      }); */
 
-    restAPI.getFaces({ initDate, finishDate })
+    /* restAPI.getFaces({ initDate, finishDate })
       .then(data => {
         let facesEvents = dataToStdFormat(data.events)
         let facesMap = getFacesCount(facesEvents)
         setDay1FacesCount(facesMap.size)
-      })
+      }) */
   }
 
   const onChangeDate2 = (e) => {
@@ -360,7 +366,7 @@ export default function Visitantes(props) {
     return dateSup >= dateInf ? false : true
   }
 
-  const getAsyncExcelData = async () =>{
+  const getAsyncExcelData = () =>{
     let dateInf = new Date(date3)
     let dateSup = new Date(date4)
     dateInf.setHours(0, 0, 0, 0) // set to the beginning of the day
@@ -371,7 +377,7 @@ export default function Visitantes(props) {
     const initDate = intervalDate.formattedInitDate
     const finishDate = intervalDate.formattedFinishDate
     console.log("trying")
-    const result = await getVisitorsData({ initDate, finishDate })
+    const result = getVisitorsData({ initDate, finishDate })
     /* getVisitorsData({ initDate, finishDate })
     .then(result =>{
       console.log("LLegamos?")
