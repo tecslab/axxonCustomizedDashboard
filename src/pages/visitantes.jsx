@@ -366,7 +366,8 @@ export default function Visitantes(props) {
     return dateSup >= dateInf ? false : true
   }
 
-  const getAsyncExcelData = () =>{
+
+  const getAsyncExcelData = async () =>{
     let dateInf = new Date(date3)
     let dateSup = new Date(date4)
     dateInf.setHours(0, 0, 0, 0) // set to the beginning of the day
@@ -377,7 +378,7 @@ export default function Visitantes(props) {
     const initDate = intervalDate.formattedInitDate
     const finishDate = intervalDate.formattedFinishDate
     console.log("trying")
-    const result = getVisitorsData({ initDate, finishDate })
+    let result = await getVisitorsData({ initDate, finishDate })
     /* getVisitorsData({ initDate, finishDate })
     .then(result =>{
       console.log("LLegamos?")
@@ -403,8 +404,8 @@ export default function Visitantes(props) {
       excelData = [...excelData, ...dayData]
       dateInf.setHours(24) // to forward to the next day
     } */
-    excelData = [["DIRECCION_ip", "TIENDA", "ENTRADAS", "SALIDAS", "dia", "mes", "anio", "DIASEM", "hora", "SEMANA", "SOLOHORA", "DIA_SEMANA", "FECHAHORA"], ...excelData]
-    return excelData
+    /* excelData = [["DIRECCION_ip", "TIENDA", "ENTRADAS", "SALIDAS", "dia", "mes", "anio", "DIASEM", "hora", "SEMANA", "SOLOHORA", "DIA_SEMANA", "FECHAHORA"], ...excelData]
+    return excelData */
   }
 
   return (
