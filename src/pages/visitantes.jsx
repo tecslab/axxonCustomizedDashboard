@@ -371,14 +371,14 @@ export default function Visitantes(props) {
     const initDate = intervalDate.formattedInitDate
     const finishDate = intervalDate.formattedFinishDate
     console.log("trying")
-    //const result = await getVisitorsData({ initDate, finishDate })
-    getVisitorsData({ initDate, finishDate })
+    const result = await getVisitorsData({ initDate, finishDate })
+    /* getVisitorsData({ initDate, finishDate })
     .then(result =>{
       console.log("LLegamos?")
       console.log(result)
     }).catch(error=>{
       console.log("generico: ", error)
-    })
+    }) */
 
 
     console.log("trying2")
