@@ -368,7 +368,7 @@ export default function Visitantes(props) {
 
 
   const getAsyncExcelData = async () =>{
-    let dateInf = new Date(date3)
+    /* let dateInf = new Date(date3)
     let dateSup = new Date(date4)
     dateInf.setHours(0, 0, 0, 0) // set to the beginning of the day
     dateSup.setHours(0, 0, 0, 0)
@@ -377,7 +377,11 @@ export default function Visitantes(props) {
     const intervalDate = getIntervalDate(dateInf)
     const initDate = intervalDate.formattedInitDate
     const finishDate = intervalDate.formattedFinishDate
-    console.log("trying")
+    console.log("trying") */
+
+    const intervalDate = getIntervalDate(e.value)
+    const initDate = intervalDate.formattedInitDate
+    const finishDate = intervalDate.formattedFinishDate
     let result = await getVisitorsData({ initDate, finishDate })
     /* getVisitorsData({ initDate, finishDate })
     .then(result =>{
