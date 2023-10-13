@@ -360,7 +360,7 @@ export default function Visitantes(props) {
     return dateSup >= dateInf ? false : true
   }
 
-  const getAsyncExcelData = async () =>{
+  const getAsyncExcelData =  () =>{
     let dateInf = new Date(date3)
     let dateSup = new Date(date4)
     dateInf.setHours(0, 0, 0, 0) // set to the beginning of the day
