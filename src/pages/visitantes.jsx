@@ -372,17 +372,28 @@ export default function Visitantes(props) {
     const finishDate = intervalDate.formattedFinishDate
     console.log("trying")
     //const result = await getVisitorsData({ initDate, finishDate })
-    getVisitorsData({ initDate, finishDate })
+    /* getVisitorsData({ initDate, finishDate })
     .then(result =>{
       console.log("LLegamos?")
       console.log(result)
     }).catch(error=>{
       console.log("generico: ", error)
-    })
+    }) */
+
+    getVisitorsData({ initDate, finishDate })
+      .then(result => {
+        console.log("asdasd")
+        setVisitorsEvents2({ peopleIn: result.peopleIn, peopleOut: result.peopleOut })
+        setCountTimeLine2(result._countTimeLine)
+        setDataLineChartVisitors(estructurarData(result.visitorsTimeLine, 2))
+      })
+      .catch(error => {
+        console.error('Error in getVisitorsData:', error);
+      });
 
 
     console.log("trying2")
-    let dayData = getFormatExcelData(result.visitorsTimeLine, dateInf)
+    //let dayData = getFormatExcelData(result.visitorsTimeLine, dateInf)
     excelData = [...excelData, ...dayData]
 
     /* while (dateInf <= dateSup) {
