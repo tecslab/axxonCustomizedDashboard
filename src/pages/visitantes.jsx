@@ -394,7 +394,7 @@ export default function Visitantes(props) {
 
     console.log("trying2")
     //let dayData = getFormatExcelData(result.visitorsTimeLine, dateInf)
-    excelData = [...excelData, ...dayData]
+    //excelData = [...excelData, ...dayData]
 
     /* while (dateInf <= dateSup) {
       const intervalDate = getIntervalDate(dateInf)
