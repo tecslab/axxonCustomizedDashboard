@@ -377,9 +377,9 @@ export default function Visitantes(props) {
     const intervalDate = getIntervalDate(dateInf)
     const initDate = intervalDate.formattedInitDate
     const finishDate = intervalDate.formattedFinishDate*/
-    console.log("trying") 
+    console.log("trying")
     
-    const intervalDate = getIntervalDate(new Date)
+    const intervalDate = getIntervalDate(new Date())
     const initDate = intervalDate.formattedInitDate
     const finishDate = intervalDate.formattedFinishDate
     let result = await getVisitorsData({ initDate, finishDate })
