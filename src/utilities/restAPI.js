@@ -6,19 +6,23 @@ export class RestAPI {
   // Needs dates on UTC0
 
   async getPeopleIn({initDate, finishDate}){
-    let baseURI = "http://" + axxonOneServer + ":" + axxonOnePort + prefix
-    let uriPeopleIn = baseURI + 'archive/events/detectors' + vEntranceCamera + initDate + "/" + finishDate + "?type=PeopleIn&limit=1200"
-    console.log(uriPeopleIn)
-    const headers = new Headers();
-    headers.set('Authorization', 'Basic ' + btoa(user + ':' + password));
-    console.log("here")
-    console.log(uriPeopleIn)
-    let rawData = await fetch(uriPeopleIn, {headers})
-    console.log(rawData.status)
-    const jsonData = await rawData.json();
-    console.log(jsonData)
-    return jsonData
-    //return fetch("http://127.0.0.1:82/video-origins", {headers})
+    try{
+      let baseURI = "http://" + axxonOneServer + ":" + axxonOnePort + prefix
+      let uriPeopleIn = baseURI + 'archive/events/detectors' + vEntranceCamera + initDate + "/" + finishDate + "?type=PeopleIn&limit=1200"
+      console.log(uriPeopleIn)
+      const headers = new Headers();
+      headers.set('Authorization', 'Basic ' + btoa(user + ':' + password));
+      console.log("here")
+      console.log(uriPeopleIn)
+      let rawData = await fetch(uriPeopleIn, {headers})
+      console.log(rawData.status)
+      const jsonData = await rawData.json();
+      console.log(jsonData)
+      return jsonData
+      //return fetch("http://127.0.0.1:82/video-origins", {headers})
+    }catch(error){
+      console.log("Error en fetch PeopleIn: ", error)
+    }
   }
 
   getPeopleOut({initDate, finishDate}){

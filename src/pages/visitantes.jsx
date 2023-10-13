@@ -372,7 +372,7 @@ export default function Visitantes(props) {
     const finishDate = intervalDate.formattedFinishDate
     
     console.log("trying")
-    let result = await getVisitorsData({ initDate, finishDate })
+    const result = await getVisitorsData({ initDate, finishDate })
     console.log("trying2")
     let dayData = getFormatExcelData(result.visitorsTimeLine, dateInf)
     excelData = [...excelData, ...dayData]
