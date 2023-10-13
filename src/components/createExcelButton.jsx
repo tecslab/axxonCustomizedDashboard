@@ -3,7 +3,7 @@ import { Button } from 'primereact/button';
 import * as XLSX from 'xlsx';
 
 const ExcelDownloadButton = ({data, disabled, getDataFuntion}) => {
-  const generateExcel = () => {
+  const generateExcel = async () => {
     /* const data = [
       ['Name', 'Age'],
       ['John', 25],
@@ -11,7 +11,7 @@ const ExcelDownloadButton = ({data, disabled, getDataFuntion}) => {
       // ... add more data
     ]; */
 
-    let data = getDataFuntion()
+    let data = await getDataFuntion()
     console.log("????????")
 
     const workSheet = XLSX.utils.aoa_to_sheet(data);

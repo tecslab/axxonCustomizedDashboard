@@ -46,20 +46,12 @@ export default function Visitantes(props) {
   }
 
   const getVisitorsData = async ({ initDate, finishDate }) => {
-    console.log("inside0")
-    console.log(initDate)
-    console.log(finishDate)
     const dataPeopleIn = await restAPI.getPeopleIn({ initDate, finishDate })
-    console.log("inside1")
 
     try {
-      console.log("inside")
       const dataPeopleIn = await restAPI.getPeopleIn({ initDate, finishDate })
-      console.log("inside2")
       const peopleIn = dataToStdFormat(dataPeopleIn.events);
-      console.log("inside3")
       const dataPeopleOut = await restAPI.getPeopleOut({ initDate, finishDate })
-      console.log("inside4")
       const peopleOut = dataToStdFormat(dataPeopleOut.events);
       const _countTimeLine = mergeInTimeLine(peopleIn, peopleOut)
       const visitorsTimeLine = getVisitors(_countTimeLine)
@@ -77,20 +69,9 @@ export default function Visitantes(props) {
     const finishDate = intervalDate.formattedFinishDate
 
     let result = await getVisitorsData({ initDate, finishDate })
-    console.log("acgieve")
     setVisitorsEvents1({ peopleIn: result.peopleIn, peopleOut: result.peopleOut })
     setCountTimeLine1(result._countTimeLine)
     setDataLineChartVisitors(estructurarData(result.visitorsTimeLine, 1))
-
-    /* getVisitorsData({ initDate, finishDate })
-      .then(result => {
-        setVisitorsEvents1({ peopleIn: result.peopleIn, peopleOut: result.peopleOut })
-        setCountTimeLine1(result._countTimeLine)
-        setDataLineChartVisitors(estructurarData(result.visitorsTimeLine, 1))
-      })
-      .catch(error => {
-        console.error('Error in getVisitorsData:', error);
-      }); */
 
     /* restAPI.getFaces({ initDate, finishDate })
       .then(data => {
@@ -368,7 +349,7 @@ export default function Visitantes(props) {
 
 
   const getAsyncExcelData = async () =>{
-    /* let dateInf = new Date(date3)
+    let dateInf = new Date(date3)
     let dateSup = new Date(date4)
     dateInf.setHours(0, 0, 0, 0) // set to the beginning of the day
     dateSup.setHours(0, 0, 0, 0)
@@ -376,27 +357,14 @@ export default function Visitantes(props) {
 
     const intervalDate = getIntervalDate(dateInf)
     const initDate = intervalDate.formattedInitDate
-    const finishDate = intervalDate.formattedFinishDate*/
+    const finishDate = intervalDate.formattedFinishDate
     console.log("trying")
     
-    const intervalDate = getIntervalDate(new Date())
-    const initDate = intervalDate.formattedInitDate
-    const finishDate = intervalDate.formattedFinishDate
     let result = await getVisitorsData({ initDate, finishDate })
-    /* getVisitorsData({ initDate, finishDate })
-    .then(result =>{
-      console.log("LLegamos?")
-      console.log(result)
-    }).catch(error=>{
-      console.log("generico: ", error)
-    }) */
+    let dayData = getFormatExcelData(result.visitorsTimeLine, dateInf)
+    excelData = [...excelData, ...dayData]
 
-
-    console.log("trying2")
-    //let dayData = getFormatExcelData(result.visitorsTimeLine, dateInf)
-    //excelData = [...excelData, ...dayData]
-
-    /* while (dateInf <= dateSup) {
+    while (dateInf <= dateSup) {
       const intervalDate = getIntervalDate(dateInf)
       const initDate = intervalDate.formattedInitDate
       const finishDate = intervalDate.formattedFinishDate
@@ -407,9 +375,9 @@ export default function Visitantes(props) {
       let dayData = getFormatExcelData(result.visitorsTimeLine, dateInf)
       excelData = [...excelData, ...dayData]
       dateInf.setHours(24) // to forward to the next day
-    } */
-    /* excelData = [["DIRECCION_ip", "TIENDA", "ENTRADAS", "SALIDAS", "dia", "mes", "anio", "DIASEM", "hora", "SEMANA", "SOLOHORA", "DIA_SEMANA", "FECHAHORA"], ...excelData]
-    return excelData */
+    }
+    excelData = [["DIRECCION_ip", "TIENDA", "ENTRADAS", "SALIDAS", "dia", "mes", "anio", "DIASEM", "hora", "SEMANA", "SOLOHORA", "DIA_SEMANA", "FECHAHORA"], ...excelData]
+    return excelData
   }
 
   return (
