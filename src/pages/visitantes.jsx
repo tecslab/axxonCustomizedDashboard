@@ -382,10 +382,8 @@ export default function Visitantes(props) {
 
     getVisitorsData({ initDate, finishDate })
       .then(result => {
-        console.log("asdasd")
-        setVisitorsEvents2({ peopleIn: result.peopleIn, peopleOut: result.peopleOut })
-        setCountTimeLine2(result._countTimeLine)
-        setDataLineChartVisitors(estructurarData(result.visitorsTimeLine, 2))
+        console.log("LLegamos?")
+        console.log(result)
       })
       .catch(error => {
         console.error('Error in getVisitorsData:', error);
