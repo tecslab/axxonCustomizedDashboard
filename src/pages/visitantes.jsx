@@ -374,7 +374,8 @@ export default function Visitantes(props) {
     //const result = await getVisitorsData({ initDate, finishDate })
     getVisitorsData({ initDate, finishDate })
     .then(result =>{
-      
+      console.log("LLegamos?")
+      console.log(result)
     }).catch(error=>{
       console.log("generico: ", error)
     })
