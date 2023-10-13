@@ -360,7 +360,7 @@ export default function Visitantes(props) {
     return dateSup >= dateInf ? false : true
   }
 
-  const getAsyncExcelData =  () =>{
+  const getAsyncExcelData = async () =>{
     let dateInf = new Date(date3)
     let dateSup = new Date(date4)
     dateInf.setHours(0, 0, 0, 0) // set to the beginning of the day
@@ -379,15 +379,6 @@ export default function Visitantes(props) {
     }).catch(error=>{
       console.log("generico: ", error)
     })
-
-    /* getVisitorsData({ initDate, finishDate })
-      .then(result => {
-        console.log("LLegamos?")
-        console.log(result)
-      })
-      .catch(error => {
-        console.error('Error in getVisitorsData:', error);
-      }); */
 
 
     console.log("trying2")
