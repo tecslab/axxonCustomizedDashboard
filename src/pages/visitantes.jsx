@@ -112,6 +112,7 @@ export default function Visitantes(props) {
 
     getVisitorsData({ initDate, finishDate })
       .then(result => {
+        setCurrentVisitors(result.visitorsTimeLine[result.visitorsTimeLine.length-1]["visitors"])
         setVisitorsEvents1({ peopleIn: result.peopleIn, peopleOut: result.peopleOut })
         setCountTimeLine1(result._countTimeLine)
         setDataLineChartVisitors(estructurarData(result.visitorsTimeLine, 1))
