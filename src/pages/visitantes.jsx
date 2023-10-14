@@ -365,7 +365,7 @@ export default function Visitantes(props) {
       console.log("trying")
       let result = await getVisitorsData({ initDate, finishDate })
       console.log("trying2")
-      let dayData = getFormatExcelData(result.visitorsTimeLine, dateInf)
+      let dayData = getFormatExcelData(result._countTimeLine, dateInf)
       excelData = [...excelData, ...dayData]
       dateInf.setHours(24) // to forward to the next day
     }
