@@ -12,7 +12,6 @@ const ExcelDownloadButton = ({data, disabled, getDataFuntion}) => {
     ]; */
 
     let data = await getDataFuntion()
-    console.log("????????")
 
     const workSheet = XLSX.utils.aoa_to_sheet(data);
     const workBook = XLSX.utils.book_new();

@@ -235,8 +235,6 @@ export default function Visitantes(props) {
   }
 
   const getFormatExcelData = (timeLine, date) => {
-    console.log(timeLine)
-    console.log(date)
     // Set data in format required by Colineal
     //let excelData = [["DIRECCION_ip", "TIENDA", "ENTRADAS", "SALIDAS", "dia", "mes", "anio", "DIASEM", "hora", "SEMANA", "SOLOHORA", "DIA_SEMANA", "FECHAHORA"]]
     let excelData = []
@@ -362,9 +360,7 @@ export default function Visitantes(props) {
       const initDate = intervalDate.formattedInitDate
       const finishDate = intervalDate.formattedFinishDate
       
-      console.log("trying")
       let result = await getVisitorsData({ initDate, finishDate })
-      console.log("trying2")
       let dayData = getFormatExcelData(result._countTimeLine, dateInf)
       excelData = [...excelData, ...dayData]
       dateInf.setHours(24) // to forward to the next day
