@@ -435,7 +435,7 @@ export default function Visitantes(props) {
 
         <div className="col-12 my-2">
           <div className="card flex justify-content-center">
-            <h2 className='mb-2'>Exportar a Excel</h2>
+            <h2 className='mb-2'>Exportar</h2>
             <span>Seleccionar rango de fechas</span>
             <br />
             <span>Desde: </span>
@@ -444,11 +444,10 @@ export default function Visitantes(props) {
             <Calendar value={date4} onChange={(e) => setDate4(e.value)} showIcon className="my-2" />
             <br />
             {/* <ExcelDownloadButton data={getFormatExcelData(countTimeline1, date1)} disabled={true}/> */}
-            <ExcelDownloadButton getDataFuntion={getAsyncExcelData} disabled={isDisabled()} />
+            <ExcelDownloadButton getDataFuntion={getAsyncExcelData} disabled={isDisabled()} ext={"xlsx"}/>
+            <ExcelDownloadButton getDataFuntion={getAsyncExcelData} disabled={isDisabled()} ext={"csv"}/>
           </div>
         </div>
-
-
       </div>
     </>
   )
