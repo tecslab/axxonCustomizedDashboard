@@ -28,6 +28,7 @@ export default function Visitantes(props) {
     labels: ["09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21"],
     datasets: []
   });
+  const [dayFacesReport, setFacesReport] = useState({})
 
   const getIntervalDate = (date) => {
     // returns the day interval between the proceesing will be done
@@ -46,7 +47,6 @@ export default function Visitantes(props) {
   }
 
   const getVisitorsData = async ({ initDate, finishDate }) => {
-    const dataPeopleIn = await restAPI.getPeopleIn({ initDate, finishDate })
 
     try {
       const dataPeopleIn = await restAPI.getPeopleIn({ initDate, finishDate })
@@ -127,6 +127,12 @@ export default function Visitantes(props) {
         let facesEvents = dataToStdFormat(data.events)
         let facesMap = getFacesCount(facesEvents)
         setDay1FacesCount(facesMap.size)
+      })
+
+    // 1706115600000
+    restAPI.getFacesDayReport((new Date()).getTime())
+      .then(data =>{
+        setFacesReport(data)
       })
   }, [])
 
@@ -370,6 +376,49 @@ export default function Visitantes(props) {
     return excelData
   }
 
+
+  // faces chart options:
+  const documentStyle = getComputedStyle(document.documentElement);
+  const textColor = documentStyle.getPropertyValue('--text-color');
+  const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
+  const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
+
+  const chartOptions = {
+    maintainAspectRatio: false,
+    aspectRatio: 0.8,
+    plugins: {
+        tooltips: {
+            mode: 'index',
+            intersect: false
+        },
+        legend: {
+            labels: {
+                color: textColor
+            }
+        }
+    },
+    scales: {
+        x: {
+            stacked: true,
+            ticks: {
+                color: textColorSecondary
+            },
+            grid: {
+                color: surfaceBorder
+            }
+        },
+        y: {
+            stacked: true,
+            ticks: {
+                color: textColorSecondary
+            },
+            grid: {
+                color: surfaceBorder
+            }
+        }
+    }
+  };
+
   return (
     <>
       <div className="row mt-3">
@@ -446,6 +495,11 @@ export default function Visitantes(props) {
             {/* <ExcelDownloadButton data={getFormatExcelData(countTimeline1, date1)} disabled={true}/> */}
             <ExcelDownloadButton getDataFuntion={getAsyncExcelData} disabled={isDisabled()} ext={"xlsx"}/>
             <ExcelDownloadButton getDataFuntion={getAsyncExcelData} disabled={isDisabled()} ext={"csv"}/>
+          </div>
+        </div>
+        <div className="col-12">
+          <div className="card">
+            <Chart type="bar" data={dayFacesReport} options={chartOptions} />
           </div>
         </div>
       </div>

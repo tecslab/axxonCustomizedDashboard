@@ -1,6 +1,6 @@
 import parametrosGlobales from "../parametrosGlobales"
 let {axxonOneServer, axxonOnePort, prefix, user,
-   password, vEntranceCamera} =  parametrosGlobales
+   password, vEntranceCamera, customServerPort} =  parametrosGlobales
 
 export class RestAPI {
   // Needs dates on UTC0
@@ -45,6 +45,20 @@ export class RestAPI {
         console.log('Error fetch en la ruta: ' + uriFaceAppeared);
         console.log(e)
       })
+  }
+
+  async getFacesDayReport(day){
+    // day is a timestamp
+    try{
+
+      let baseURI = "http://" + axxonOneServer + ":" + customServerPort + "/"
+      let uriFacesDayReport = baseURI + 'get-faces-report-for-chart/' + day
+      let rawData = await fetch(uriFacesDayReport)
+      const jsonData = await rawData.json();
+      return jsonData
+    }catch(error){
+      console.log("Error en fetch PeopleIn: ", error)
+    }
   }
 
 
