@@ -31,7 +31,7 @@ export default function Visitantes(props) {
   const [dayFacesReport, setFacesReport] = useState({})
 
   const getIntervalDate = (date) => {
-    // returns the day interval between the proceesing will be done
+    // returns the day interval between the processing will be done
     // receives date On user UTC and transform it to UTC0
     let initDate = new Date(date)
     initDate.setHours(detectionStartTime.substring(0, 2))
